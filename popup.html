@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Welcome</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link rel="stylesheet" href="styles/style.css">
+</head>
+<body>
+    <div class="container">
+        <div id="features" class="card">
+            <div class="card-content">
+                <h1 class="title">Smart Shopping Assistant</h1>
+                <p class="subtitle">Your AI-powered shopping companion</p>
+                
+                <div class="feature-list">
+                    <div class="feature-item">
+                        <span class="material-icons feature-icon">rate_review</span>
+                        <div class="feature-text">
+                            <h3>Smart Review Analysis</h3>
+                            <p>Automatically gather product reviews, filter out irrelevant information, and provide summarized insights to save users' time.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="feature-item">
+                        <span class="material-icons feature-icon">trending_up</span>
+                        <div class="feature-text">
+                            <h3>Price Trend Tracking</h3>
+                            <p>View price history trends for products in visual charts to make informed purchasing decisions.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="feature-item">
+                        <span class="material-icons feature-icon">storefront</span>
+                        <div class="feature-text">
+                            <h3>Price Comparison</h3>
+                            <p>Find websites offering the same product at lower prices across the internet.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="feature-item">
+                        <span class="material-icons feature-icon">shopping_basket</span>
+                        <div class="feature-text">
+                            <h3>Similar Product Finder</h3>
+                            <p>Discover similar products with better value across the web.</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="button-container">
+                    <button id="getStartedBtn" class="btn btn-primary">Get Started</button>
+                </div>
+            </div>
+        </div>
+
+        <div id="welcome" class="card" style="display:none;">
+            <div class="card-content">
+                <h1 class="title">Welcome</h1>
+                <p class="subtitle">Sign in to access all features</p>
+                <div class="button-container">
+                    <button id="loginBtn" class="btn btn-primary">Login</button>
+                    <button id="registerBtn" class="btn btn-secondary">Register</button>
+                </div>
+            </div>
+        </div>
+        
+        <div id="login" class="card" style="display:none;">
+            <div class="card-content">
+                <h2 class="title">Login</h2>
+                <form id="loginForm">
+                    <div class="form-field">
+                        <label for="loginUsername">Username</label>
+                        <input type="text" id="loginUsername" required>
+                    </div>
+                    <div class="form-field">
+                        <label for="loginPassword">Password</label>
+                        <input type="password" id="loginPassword" required>
+                    </div>
+                    <div class="button-container">
+                        <button type="button" id="backToWelcomeFromLogin" class="btn btn-text">Back</button>
+                        <button type="submit" class="btn btn-primary">Login</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+        
+        <div id="register" class="card" style="display:none;">
+            <div class="card-content">
+                <h2 class="title">Register</h2>
+                <form id="registerForm">
+                    <div class="form-field">
+                        <label for="registerUsername">Username</label>
+                        <input type="text" id="registerUsername" required>
+                    </div>
+                    <div class="form-field">
+                        <label for="registerPassword">Password</label>
+                        <input type="password" id="registerPassword" required>
+                    </div>
+                    <div class="form-field">
+                        <label for="confirmPassword">Confirm Password</label>
+                        <input type="password" id="confirmPassword" required>
+                    </div>
+                    <div class="button-container">
+                        <button type="button" id="backToWelcomeFromRegister" class="btn btn-text">Back</button>
+                        <button type="submit" class="btn btn-primary">Register</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <script src="popup.js"></script>
+</body>
+</html>
