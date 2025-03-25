@@ -1,8 +1,8 @@
 {
   "manifest_version": 3,
-  "name": "Roller Coaster Dealer",
-  "version": "1.0",
-  "description": "A simple Chrome extension.",
+  "name": "Smart Shopping Assistant",
+  "version": "1.0.1",
+  "description": "AI-powered shopping assistant that helps you make informed purchasing decisions",
   "background": {
     "service_worker": "background.js"
   },
@@ -11,7 +11,8 @@
     "default_icon": "icons/icon128.png"
   },
   "permissions": [
-    "storage"
+    "storage",
+    "activeTab"
   ],
   "icons": {
     "16": "icons/icon16.png",

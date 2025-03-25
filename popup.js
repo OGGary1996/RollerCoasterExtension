@@ -1,4 +1,6 @@
-document.addEventListener('DOMContentLoaded', function() {
+import authService from './services/auth.js';
+
+document.addEventListener('DOMContentLoaded', async function() {
     const featuresDiv = document.getElementById('features');
     const welcomeDiv = document.getElementById('welcome');
     const loginDiv = document.getElementById('login');
@@ -11,6 +13,17 @@ document.addEventListener('DOMContentLoaded', function() {
     const registerForm = document.getElementById('registerForm');
     const backToWelcomeFromLogin = document.getElementById('backToWelcomeFromLogin');
     const backToWelcomeFromRegister = document.getElementById('backToWelcomeFromRegister');
+
+    // Check if user is already logged in
+    const isLoggedIn = await authService.isLoggedIn();
+    if (isLoggedIn) {
+        // Hide all other divs and show main interface
+        featuresDiv.style.display = 'none';
+        welcomeDiv.style.display = 'none';
+        loginDiv.style.display = 'none';
+        registerDiv.style.display = 'none';
+        // TODO: Show main interface
+    }
 
     // Navigate from features to welcome page
     getStartedBtn.addEventListener('click', function() {
@@ -43,20 +56,23 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 
     // Handle login form submission
-    loginForm.addEventListener('submit', function(event) {
+    loginForm.addEventListener('submit', async function(event) {
         event.preventDefault();
         const username = document.getElementById('loginUsername').value;
         const password = document.getElementById('loginPassword').value;
         
-        // Add login logic here
-        console.log('Login attempt:', username);
+        const result = await authService.login(username, password);
         
-        // For demo purposes, just show an alert
-        alert('Logged in as ' + username);
+        if (result.success) {
+            alert(result.message);
+            // TODO: Show main interface
+        } else {
+            alert(result.message);
+        }
     });
 
     // Handle register form submission
-    registerForm.addEventListener('submit', function(event) {
+    registerForm.addEventListener('submit', async function(event) {
         event.preventDefault();
         const username = document.getElementById('registerUsername').value;
         const password = document.getElementById('registerPassword').value;
@@ -68,14 +84,15 @@ document.addEventListener('DOMContentLoaded', function() {
             return;
         }
         
-        // Add registration logic here
-        console.log('Registration attempt:', username);
+        const result = await authService.register(username, password);
         
-        // For demo purposes, just show an alert
-        alert('Registered as ' + username);
-        
-        // Redirect to welcome screen after successful registration
-        registerDiv.style.display = 'none';
-        welcomeDiv.style.display = 'block';
+        if (result.success) {
+            alert(result.message);
+            // Redirect to welcome screen after successful registration
+            registerDiv.style.display = 'none';
+            welcomeDiv.style.display = 'block';
+        } else {
+            alert(result.message);
+        }
     });
 });
