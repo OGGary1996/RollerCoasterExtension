@@ -1,0 +1,41 @@
+<svg width="200" height="200" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bgGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#75a7ff" />
+      <stop offset="100%" stop-color="#2979ff" />
+    </linearGradient>
+    <linearGradient id="cardGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FFFFFF" stop-opacity="0.9" />
+      <stop offset="100%" stop-color="#F8F9FA" stop-opacity="0.8" />
+    </linearGradient>
+    <filter id="shadow" x="-5%" y="-5%" width="110%" height="110%">
+      <feDropShadow dx="0" dy="4" stdDeviation="4" flood-color="#000000" flood-opacity="0.15"/>
+    </filter>
+  </defs>
+  
+  <!-- Background circle -->
+  <circle cx="100" cy="100" r="90" fill="url(#bgGradient)" opacity="0.2"/>
+  
+  <!-- Main card -->
+  <path d="M55 90C55 81.7157 61.7157 75 70 75H130C138.284 75 145 81.7157 145 90V150C145 158.284 138.284 165 130 165H70C61.7157 165 55 158.284 55 150V90Z" fill="url(#cardGradient)" filter="url(#shadow)" stroke="#2979ff" stroke-width="2"/>
+  
+  <!-- Plus icon circle -->
+  <circle cx="80" cy="110" r="15" fill="#2979ff" fill-opacity="0.2" stroke="#2979ff" stroke-width="2"/>
+  <path d="M80 102V118" stroke="#2979ff" stroke-width="2" stroke-linecap="round"/>
+  <path d="M72 110H88" stroke="#2979ff" stroke-width="2" stroke-linecap="round"/>
+  
+  <!-- List items -->
+  <rect x="105" y="100" width="30" height="6" rx="3" fill="#FF3D00" fill-opacity="0.8"/>
+  <rect x="105" y="110" width="20" height="6" rx="3" fill="#FF3D00" fill-opacity="0.6"/>
+  <rect x="105" y="120" width="25" height="6" rx="3" fill="#FF3D00" fill-opacity="0.4"/>
+  
+  <!-- Decorative elements -->
+  <path d="M160 50L170 60L150 80" stroke="#FF3D00" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M40 50L50 40L70 60" stroke="#2979ff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+  
+  <!-- Decorative circles -->
+  <circle cx="155" cy="130" r="8" fill="#FF3D00" fill-opacity="0.6"/>
+  <circle cx="170" cy="110" r="5" fill="#2979ff" fill-opacity="0.5"/>
+  <circle cx="45" cy="130" r="6" fill="#FF3D00" fill-opacity="0.4"/>
+  <circle cx="30" cy="110" r="4" fill="#2979ff" fill-opacity="0.5"/>
+</svg> 
