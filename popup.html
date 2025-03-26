@@ -3,15 +3,26 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Welcome</title>
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500&display=swap" rel="stylesheet">
+    <title>Smart Shopping Assistant</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <link rel="stylesheet" href="styles/style.css">
 </head>
 <body>
+    <!-- Background elements for glass effect -->
+    <div class="bg-shapes">
+        <div class="shape shape-1"></div>
+        <div class="shape shape-2"></div>
+        <div class="shape shape-3"></div>
+        <div class="shape shape-4"></div>
+    </div>
+
     <div class="container">
         <div id="features" class="card">
             <div class="card-content">
+                <div class="illustration-container">
+                    <img src="images/features.svg" alt="Features" class="illustration">
+                </div>
                 <h1 class="title">Smart Shopping Assistant</h1>
                 <p class="subtitle">Your AI-powered shopping companion</p>
                 
@@ -66,6 +77,9 @@
 
         <div id="welcome" class="card" style="display:none;">
             <div class="card-content">
+                <div class="illustration-container">
+                    <img src="images/welcome.svg" alt="Welcome" class="illustration">
+                </div>
                 <h1 class="title">Welcome</h1>
                 <p class="subtitle">Sign in to access all features</p>
                 <div class="button-container">
@@ -76,8 +90,13 @@
         </div>
         
         <div id="login" class="card" style="display:none;">
+            <div class="glass-blur"></div>
             <div class="card-content">
+                <div class="illustration-container">
+                    <img src="images/login.svg" alt="Login" class="illustration">
+                </div>
                 <h2 class="title">Login</h2>
+                <div id="loginMessage" class="message" style="display:none;"></div>
                 <form id="loginForm">
                     <div class="form-field">
                         <label for="loginUsername">Username</label>
@@ -92,12 +111,18 @@
                         <button type="submit" class="btn btn-primary">Login</button>
                     </div>
                 </form>
+                <div id="loginSpinner" class="spinner" style="display:none;"></div>
             </div>
         </div>
         
         <div id="register" class="card" style="display:none;">
+            <div class="glass-blur"></div>
             <div class="card-content">
+                <div class="illustration-container">
+                    <img src="images/register.svg" alt="Register" class="illustration">
+                </div>
                 <h2 class="title">Register</h2>
+                <div id="registerMessage" class="message" style="display:none;"></div>
                 <form id="registerForm">
                     <div class="form-field">
                         <label for="registerUsername">Username</label>
@@ -116,6 +141,7 @@
                         <button type="submit" class="btn btn-primary">Register</button>
                     </div>
                 </form>
+                <div id="registerSpinner" class="spinner" style="display:none;"></div>
             </div>
         </div>
 

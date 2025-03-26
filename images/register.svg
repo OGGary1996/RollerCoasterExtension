@@ -1,0 +1,55 @@
+<svg width="200" height="200" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bgGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#75a7ff" />
+      <stop offset="100%" stop-color="#2979ff" />
+    </linearGradient>
+    <linearGradient id="cardGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FFFFFF" stop-opacity="0.9" />
+      <stop offset="100%" stop-color="#F8F9FA" stop-opacity="0.8" />
+    </linearGradient>
+    <linearGradient id="accentGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#ff7539" />
+      <stop offset="100%" stop-color="#ff3d00" />
+    </linearGradient>
+    <filter id="shadow" x="-5%" y="-5%" width="110%" height="110%">
+      <feDropShadow dx="0" dy="4" stdDeviation="4" flood-color="#000000" flood-opacity="0.15"/>
+    </filter>
+  </defs>
+  
+  <!-- Background circle -->
+  <circle cx="100" cy="100" r="90" fill="url(#bgGradient)" opacity="0.15"/>
+  
+  <!-- Decorative elements -->
+  <circle cx="45" cy="60" r="8" fill="#FF3D00" fill-opacity="0.4"/>
+  <circle cx="35" cy="150" r="12" fill="#2979ff" fill-opacity="0.3"/>
+  <circle cx="165" cy="150" r="10" fill="#FF3D00" fill-opacity="0.25"/>
+  
+  <!-- Card with shadow -->
+  <rect x="55" y="60" width="90" height="110" rx="8" fill="url(#cardGradient)" filter="url(#shadow)" stroke="#2979ff" stroke-width="2"/>
+  
+  <!-- Form lines -->
+  <path d="M75 80H125" stroke="#2979ff" stroke-width="2.5" stroke-linecap="round"/>
+  <path d="M75 100H125" stroke="#2979ff" stroke-width="2.5" stroke-linecap="round"/>
+  <path d="M75 120H125" stroke="#2979ff" stroke-width="2.5" stroke-linecap="round"/>
+  <path d="M75 140H125" stroke="#2979ff" stroke-width="2.5" stroke-linecap="round"/>
+  
+  <!-- Add button circle -->
+  <circle cx="140" cy="60" r="20" fill="url(#accentGradient)" fill-opacity="0.8" stroke="#FF3D00" stroke-width="2"/>
+  <path d="M140 50V70" stroke="white" stroke-width="2.5" stroke-linecap="round"/>
+  <path d="M150 60H130" stroke="white" stroke-width="2.5" stroke-linecap="round"/>
+  
+  <!-- Sparkles and decorative elements -->
+  <path d="M40 35L42 40L37 38L40 43L35 40L40 35Z" fill="#2979ff"/>
+  <path d="M160 30L162 35L157 33L160 38L155 35L160 30Z" fill="#FF3D00"/>
+  <path d="M100 175L102 180L97 178L100 183L95 180L100 175Z" fill="#2979ff"/>
+
+  <!-- Decorative shapes -->
+  <path d="M25 100C25 100 30 95 35 100C40 105 45 100 45 100" stroke="#FF3D00" stroke-width="2" stroke-linecap="round"/>
+  <path d="M155 120C155 120 160 115 165 120C170 125 175 120 175 120" stroke="#2979ff" stroke-width="2" stroke-linecap="round"/>
+  
+  <!-- Confetti pieces -->
+  <rect x="30" cy="80" width="8" height="8" rx="1" fill="#2979ff" fill-opacity="0.6" transform="rotate(15 30 80)"/>
+  <rect x="175" cy="90" width="6" height="6" rx="1" fill="#FF3D00" fill-opacity="0.6" transform="rotate(-15 175 90)"/>
+  <rect x="160" cy="170" width="7" height="7" rx="1" fill="#2979ff" fill-opacity="0.5" transform="rotate(30 160 170)"/>
+</svg> 
