@@ -9,10 +9,13 @@ document.addEventListener('DOMContentLoaded', async function() {
     const getStartedBtn = document.getElementById('getStartedBtn');
     const loginBtn = document.getElementById('loginBtn');
     const registerBtn = document.getElementById('registerBtn');
+    const guestLoginBtn = document.getElementById('guestLoginBtn');
     const loginForm = document.getElementById('loginForm');
     const registerForm = document.getElementById('registerForm');
     const backToWelcomeFromLogin = document.getElementById('backToWelcomeFromLogin');
     const backToWelcomeFromRegister = document.getElementById('backToWelcomeFromRegister');
+    const chartBtn = document.getElementById('chartBtn');
+    const backToFeaturesFromChart = document.getElementById('backToFeaturesFromChart');
     
     const loginSpinner = document.getElementById('loginSpinner');
     const registerSpinner = document.getElementById('registerSpinner');
@@ -39,7 +42,8 @@ document.addEventListener('DOMContentLoaded', async function() {
         welcomeDiv.style.display = 'none';
         loginDiv.style.display = 'none';
         registerDiv.style.display = 'none';
-        // TODO: Show main interface
+        // Redirect to main page
+        window.location.href = 'mainPage.html';
     }
 
     // Add page transition animation
@@ -80,6 +84,36 @@ document.addEventListener('DOMContentLoaded', async function() {
         switchPage(welcomeDiv, registerDiv);
     });
 
+    // Guest login - direct access to main interface
+    guestLoginBtn.addEventListener('click', function() {
+        // Set as guest user in localStorage
+        localStorage.setItem('username', 'Guest');
+        localStorage.setItem('isLoggedIn', 'true');
+        localStorage.setItem('isGuestMode', 'true');
+        
+        console.log('Entering as guest...');
+        
+        // Show a brief notice before redirecting
+        const guestNotice = document.createElement('div');
+        guestNotice.className = 'message info';
+        guestNotice.textContent = 'Entering guest mode. Some features will be limited.';
+        guestNotice.style.position = 'absolute';
+        guestNotice.style.bottom = '20px';
+        guestNotice.style.left = '0';
+        guestNotice.style.right = '0';
+        guestNotice.style.marginLeft = 'auto';
+        guestNotice.style.marginRight = 'auto';
+        guestNotice.style.width = '80%';
+        guestNotice.style.textAlign = 'center';
+        guestNotice.style.zIndex = '9999';
+        document.body.appendChild(guestNotice);
+        
+        // Redirect to main page after a short delay
+        setTimeout(() => {
+            window.location.href = 'mainPage.html';
+        }, 1500);
+    });
+
     // Back to welcome from login
     backToWelcomeFromLogin.addEventListener('click', function() {
         switchPage(loginDiv, welcomeDiv);
@@ -112,10 +146,16 @@ document.addEventListener('DOMContentLoaded', async function() {
         
         if (result.success) {
             showMessage(loginMessage, result.message, 'success');
-            // TODO: Show main interface after a short delay
+            
+            // Set username in localStorage for display on main page
+            localStorage.setItem('username', username);
+            localStorage.setItem('isLoggedIn', 'true');
+            localStorage.setItem('isGuestMode', 'false');
+            
+            // Redirect to main page after a short delay
             setTimeout(() => {
                 console.log('Redirecting to main interface...');
-                // TODO: Implement redirect
+                window.location.href = 'mainPage.html';
             }, 1500);
         } else {
             showMessage(loginMessage, result.message, 'error');
@@ -164,6 +204,71 @@ document.addEventListener('DOMContentLoaded', async function() {
             showMessage(registerMessage, result.message, 'error');
         }
     });
+
+    // Show chart page
+    if (chartBtn) {
+        chartBtn.addEventListener('click', function() {
+            if (typeof $ !== 'undefined') {
+                $('#features').hide();
+                $('#chart').show();
+                $('#chartContainer').show();
+            } else {
+                // Fallback if jQuery is not available
+                document.getElementById('features').style.display = 'none';
+                document.getElementById('chart').style.display = 'block';
+                document.getElementById('chartContainer').style.display = 'block';
+            }
+        });
+    }
+
+    // Back to features from chart
+    if (backToFeaturesFromChart) {
+        backToFeaturesFromChart.addEventListener('click', function() {
+            if (typeof $ !== 'undefined') {
+                $('#features').show();
+                $('#chart').hide();
+                $('#chartContainer').hide();
+            } else {
+                // Fallback if jQuery is not available
+                document.getElementById('features').style.display = 'block';
+                document.getElementById('chart').style.display = 'none';
+                document.getElementById('chartContainer').style.display = 'none';
+            }
+        });
+    }
+
+    // Initialize chart if CanvasJS is available
+    if (typeof CanvasJS !== 'undefined' && document.getElementById('chartContainer')) {
+        var chart = new CanvasJS.Chart("chartContainer", {
+            animationEnabled: true,
+            exportEnabled: true,
+            title: {
+                text: "Acer Computer Price Data for April 2025"
+            },
+            axisY: {
+                title: "Price in CAD",
+                interval: 100,
+                prefix: "$",
+                valueFormatString: "#,###"
+            },
+            data: [{
+                type: "stepLine",
+                yValueFormatString: "$#,###",
+                xValueFormatString: "MMM DD, YYYY",
+                markerSize: 5,
+                dataPoints: [
+                    { x: new Date(2025, 3, 1), y: 600 },  // April 1, 2025
+                    { x: new Date(2025, 3, 5), y: 620 },  // April 5, 2025
+                    { x: new Date(2025, 3, 10), y: 615 }, // April 10, 2025
+                    { x: new Date(2025, 3, 15), y: 630 }, // April 15, 2025
+                    { x: new Date(2025, 3, 20), y: 640 }, // April 20, 2025
+                    { x: new Date(2025, 3, 25), y: 650 }, // April 25, 2025
+                    { x: new Date(2025, 3, 30), y: 670 }  // April 30, 2025
+                ]
+            }]
+        });
+        chart.render();
+    }
 
     // Add transition styles to all cards
     const cards = document.querySelectorAll('.card');
