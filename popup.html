@@ -47,6 +47,15 @@
                             <p>Discover similar products with better value across the web.</p>
                         </div>
                     </div>
+
+                    <div class="feature-item">
+                        <span class="material-icons feature-icon">shopping_basket</span>
+                        <div class="feature-text">
+                            <h3>Chart</h3>
+                            <canvas id="steppedLineChart" style="display: none;"></canvas>
+                            <button id="chartBtn" class="btn btn-primary">View Chart</button>
+                        </div>
+                    </div>
                 </div>
                 
                 <div class="button-container">
@@ -109,7 +118,20 @@
                 </form>
             </div>
         </div>
+
+        <div id="chart" class="card" style="display:none;">
+            <div class="card-content">
+                <h2 class="title">Price Trend Chart</h2>
+                <div id="chartContainer" style="height: 370px; width: 100%;"></div>
+                <div class="button-container">
+                    <button type="button" id="backToFeaturesFromChart" class="btn btn-text">Back</button>
+                </div>
+            </div>
+
+        </div>
     </div>
+    <script src="jquery-3.7.1.min.js"></script>
+    <script src="canvasjs.min.js"></script>
     <script type="module" src="popup.js"></script>
 </body>
 </html>
