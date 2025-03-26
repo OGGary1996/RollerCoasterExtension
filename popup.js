@@ -5,16 +5,15 @@ document.addEventListener('DOMContentLoaded', async function() {
     const welcomeDiv = document.getElementById('welcome');
     const loginDiv = document.getElementById('login');
     const registerDiv = document.getElementById('register');
-    const chartDiv = document.getElementById('chart'); // 图表容器
     const getStartedBtn = document.getElementById('getStartedBtn');
     const loginBtn = document.getElementById('loginBtn');
     const registerBtn = document.getElementById('registerBtn');
-    const chartBtn = document.getElementById('chartBtn'); // 图表按钮
     const loginForm = document.getElementById('loginForm');
     const registerForm = document.getElementById('registerForm');
     const backToWelcomeFromLogin = document.getElementById('backToWelcomeFromLogin');
     const backToWelcomeFromRegister = document.getElementById('backToWelcomeFromRegister');
-    const backToFeaturesFromChart = document.getElementById('backToFeaturesFromChart'); // 返回按钮
+    const chartBtn = document.getElementById('chartBtn');
+    const backToFeaturesFromChart = document.getElementById('backToFeaturesFromChart');
     
     const loginSpinner = document.getElementById('loginSpinner');
     const registerSpinner = document.getElementById('registerSpinner');
@@ -41,7 +40,8 @@ document.addEventListener('DOMContentLoaded', async function() {
         welcomeDiv.style.display = 'none';
         loginDiv.style.display = 'none';
         registerDiv.style.display = 'none';
-        // TODO: Show main interface
+        // Redirect to main page
+        window.location.href = 'mainPage.html';
     }
 
     // Add page transition animation
@@ -114,10 +114,15 @@ document.addEventListener('DOMContentLoaded', async function() {
         
         if (result.success) {
             showMessage(loginMessage, result.message, 'success');
-            // TODO: Show main interface after a short delay
+            
+            // Set username in localStorage for display on main page
+            localStorage.setItem('username', username);
+            localStorage.setItem('isLoggedIn', 'true');
+            
+            // Redirect to main page after a short delay
             setTimeout(() => {
                 console.log('Redirecting to main interface...');
-                // TODO: Implement redirect
+                window.location.href = 'mainPage.html';
             }, 1500);
         } else {
             showMessage(loginMessage, result.message, 'error');
@@ -170,20 +175,37 @@ document.addEventListener('DOMContentLoaded', async function() {
     // Show chart page
     if (chartBtn) {
         chartBtn.addEventListener('click', function() {
-            switchPage(featuresDiv, chartDiv);
+            if (typeof $ !== 'undefined') {
+                $('#features').hide();
+                $('#chart').show();
+                $('#chartContainer').show();
+            } else {
+                // Fallback if jQuery is not available
+                document.getElementById('features').style.display = 'none';
+                document.getElementById('chart').style.display = 'block';
+                document.getElementById('chartContainer').style.display = 'block';
+            }
         });
     }
 
     // Back to features from chart
     if (backToFeaturesFromChart) {
         backToFeaturesFromChart.addEventListener('click', function() {
-            switchPage(chartDiv, featuresDiv);
+            if (typeof $ !== 'undefined') {
+                $('#features').show();
+                $('#chart').hide();
+                $('#chartContainer').hide();
+            } else {
+                // Fallback if jQuery is not available
+                document.getElementById('features').style.display = 'block';
+                document.getElementById('chart').style.display = 'none';
+                document.getElementById('chartContainer').style.display = 'none';
+            }
         });
     }
 
-    // Initialize chart if chart container exists
-    const chartContainer = document.getElementById('chartContainer');
-    if (chartContainer && typeof CanvasJS !== 'undefined') {
+    // Initialize chart if CanvasJS is available
+    if (typeof CanvasJS !== 'undefined' && document.getElementById('chartContainer')) {
         var chart = new CanvasJS.Chart("chartContainer", {
             animationEnabled: true,
             exportEnabled: true,
@@ -215,7 +237,7 @@ document.addEventListener('DOMContentLoaded', async function() {
         chart.render();
     }
 
-    // Add transition styles to all cards - UI分支的功能
+    // Add transition styles to all cards
     const cards = document.querySelectorAll('.card');
     cards.forEach(card => {
         card.style.transition = 'opacity 0.3s ease, transform 0.3s ease';

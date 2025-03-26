@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smart Shopping Assistant</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link rel="stylesheet" href="styles/style.css">
+    <link rel="stylesheet" href="styles/mainPage.css">
+    <script src="https://canvasjs.com/assets/script/canvasjs.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<body>
+    <!-- Background elements for glass effect -->
+    <div class="bg-shapes">
+        <div class="shape shape-1"></div>
+        <div class="shape shape-2"></div>
+        <div class="shape shape-3"></div>
+        <div class="shape shape-4"></div>
+    </div>
+
+    <div class="container main-container">
+        <!-- Header with user info and navigation -->
+        <header class="main-header">
+            <div class="logo">
+                <span class="material-icons">shopping_cart</span>
+                <h2>Smart Shopping</h2>
+            </div>
+            <div class="user-menu">
+                <span id="userName">User</span>
+                <button id="logoutBtn" class="btn btn-text">
+                    <span class="material-icons">logout</span>
+                </button>
+            </div>
+        </header>
+
+        <!-- Product Information Section -->
+        <div class="product-info">
+            <div class="product-header">
+                <div class="product-image">
+                    <img src="images/placeholder-product.png" alt="Product" id="productImage">
+                </div>
+                <div class="product-details">
+                    <h1 id="productTitle">Product Name</h1>
+                    <div class="price-info">
+                        <h2 id="productPrice">$599.99</h2>
+                        <span id="priceChange" class="price-change price-down">
+                            <span class="material-icons">arrow_downward</span>
+                            <span>5% from last month</span>
+                        </span>
+                    </div>
+                    <div class="product-rating">
+                        <div class="stars">
+                            <span class="material-icons">star</span>
+                            <span class="material-icons">star</span>
+                            <span class="material-icons">star</span>
+                            <span class="material-icons">star</span>
+                            <span class="material-icons">star_half</span>
+                        </div>
+                        <span class="rating-value">4.5 (230 reviews)</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tabs Navigation -->
+        <div class="tabs">
+            <button class="tab-btn active" data-tab="price-trends">
+                <span class="material-icons">trending_up</span>
+                Price Trends
+            </button>
+            <button class="tab-btn" data-tab="reviews">
+                <span class="material-icons">rate_review</span>
+                Review Analysis
+            </button>
+            <button class="tab-btn" data-tab="similar">
+                <span class="material-icons">shopping_basket</span>
+                Similar Products
+            </button>
+            <button class="tab-btn" data-tab="price-compare">
+                <span class="material-icons">storefront</span>
+                Price Comparison
+            </button>
+        </div>
+
+        <!-- Tab Contents -->
+        <div class="tab-content">
+            <!-- Price Trends Tab -->
+            <div class="tab-pane active" id="price-trends">
+                <div class="card">
+                    <div class="glass-blur"></div>
+                    <div class="card-content">
+                        <h2 class="section-title">Price History</h2>
+                        <div id="priceChartContainer" class="chart-container"></div>
+                        <div class="price-insights">
+                            <div class="insight">
+                                <span class="material-icons">insights</span>
+                                <div class="insight-text">
+                                    <h3>Current Price:</h3>
+                                    <p>10% lower than average</p>
+                                </div>
+                            </div>
+                            <div class="insight">
+                                <span class="material-icons">history</span>
+                                <div class="insight-text">
+                                    <h3>Lowest Price:</h3>
+                                    <p>$550 (2 months ago)</p>
+                                </div>
+                            </div>
+                            <div class="insight">
+                                <span class="material-icons">timeline</span>
+                                <div class="insight-text">
+                                    <h3>Price Prediction:</h3>
+                                    <p>Likely to drop 5% next month</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Review Analysis Tab -->
+            <div class="tab-pane" id="reviews">
+                <div class="card">
+                    <div class="glass-blur"></div>
+                    <div class="card-content">
+                        <h2 class="section-title">Review Analysis</h2>
+                        <div class="review-summary">
+                            <div class="summary-chart">
+                                <div class="positive">
+                                    <span class="label">Positive</span>
+                                    <div class="bar">
+                                        <div class="fill" style="width: 75%;"></div>
+                                    </div>
+                                    <span class="percent">75%</span>
+                                </div>
+                                <div class="neutral">
+                                    <span class="label">Neutral</span>
+                                    <div class="bar">
+                                        <div class="fill" style="width: 15%;"></div>
+                                    </div>
+                                    <span class="percent">15%</span>
+                                </div>
+                                <div class="negative">
+                                    <span class="label">Negative</span>
+                                    <div class="bar">
+                                        <div class="fill" style="width: 10%;"></div>
+                                    </div>
+                                    <span class="percent">10%</span>
+                                </div>
+                            </div>
+                            <div class="key-points">
+                                <h3>Key Points Mentioned</h3>
+                                <div class="point positive">
+                                    <span class="material-icons">thumb_up</span>
+                                    <span>Great battery life (mentioned in 45 reviews)</span>
+                                </div>
+                                <div class="point positive">
+                                    <span class="material-icons">thumb_up</span>
+                                    <span>Fast performance (mentioned in 38 reviews)</span>
+                                </div>
+                                <div class="point negative">
+                                    <span class="material-icons">thumb_down</span>
+                                    <span>Heats up during gaming (mentioned in 12 reviews)</span>
+                                </div>
+                            </div>
+                            <button id="showFullReviewBtn" class="btn btn-primary">View Detailed Analysis</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Similar Products Tab -->
+            <div class="tab-pane" id="similar">
+                <div class="card">
+                    <div class="glass-blur"></div>
+                    <div class="card-content">
+                        <h2 class="section-title">Similar Products</h2>
+                        <div class="similar-products">
+                            <div class="product-card">
+                                <div class="product-image">
+                                    <img src="images/placeholder-similar1.png" alt="Similar Product 1">
+                                </div>
+                                <div class="product-details">
+                                    <h3>Similar Laptop Model A</h3>
+                                    <div class="price-rating">
+                                        <span class="price">$549.99</span>
+                                        <span class="rating">
+                                            <span class="material-icons">star</span>
+                                            4.3
+                                        </span>
+                                    </div>
+                                    <div class="comparison">
+                                        <span class="better">
+                                            <span class="material-icons">add</span>
+                                            Better graphics
+                                        </span>
+                                        <span class="worse">
+                                            <span class="material-icons">remove</span>
+                                            Shorter battery life
+                                        </span>
+                                    </div>
+                                    <button class="btn btn-secondary">View Details</button>
+                                </div>
+                            </div>
+                            <div class="product-card">
+                                <div class="product-image">
+                                    <img src="images/placeholder-similar2.png" alt="Similar Product 2">
+                                </div>
+                                <div class="product-details">
+                                    <h3>Similar Laptop Model B</h3>
+                                    <div class="price-rating">
+                                        <span class="price">$659.99</span>
+                                        <span class="rating">
+                                            <span class="material-icons">star</span>
+                                            4.7
+                                        </span>
+                                    </div>
+                                    <div class="comparison">
+                                        <span class="better">
+                                            <span class="material-icons">add</span>
+                                            More RAM
+                                        </span>
+                                        <span class="better">
+                                            <span class="material-icons">add</span>
+                                            Faster processor
+                                        </span>
+                                    </div>
+                                    <button class="btn btn-secondary">View Details</button>
+                                </div>
+                            </div>
+                            <button id="showMoreSimilarBtn" class="btn btn-primary">Show More Similar Products</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Price Comparison Tab -->
+            <div class="tab-pane" id="price-compare">
+                <div class="card">
+                    <div class="glass-blur"></div>
+                    <div class="card-content">
+                        <h2 class="section-title">Price Comparison</h2>
+                        <div class="price-comparison">
+                            <div class="store-list">
+                                <div class="store">
+                                    <img src="images/placeholder-store1.png" alt="Store 1">
+                                    <div class="store-details">
+                                        <h3>Online Store A</h3>
+                                        <div class="price-shipping">
+                                            <span class="price">$599.99</span>
+                                            <span class="shipping">Free shipping</span>
+                                        </div>
+                                        <button class="btn btn-primary">Visit Store</button>
+                                    </div>
+                                </div>
+                                <div class="store">
+                                    <img src="images/placeholder-store2.png" alt="Store 2">
+                                    <div class="store-details">
+                                        <h3>Online Store B</h3>
+                                        <div class="price-shipping">
+                                            <span class="price">$589.99</span>
+                                            <span class="shipping">$9.99 shipping</span>
+                                        </div>
+                                        <button class="btn btn-primary">Visit Store</button>
+                                    </div>
+                                </div>
+                                <div class="store">
+                                    <img src="images/placeholder-store3.png" alt="Store 3">
+                                    <div class="store-details">
+                                        <h3>Online Store C</h3>
+                                        <div class="price-shipping">
+                                            <span class="price">$609.99</span>
+                                            <span class="shipping">Free shipping</span>
+                                        </div>
+                                        <button class="btn btn-primary">Visit Store</button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="price-history-note">
+                                <span class="material-icons">info</span>
+                                <p>Price data updated 2 hours ago. Shipping costs may vary based on your location.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script type="module" src="mainPage.js"></script>
+</body>
+</html> 

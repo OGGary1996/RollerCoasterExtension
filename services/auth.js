@@ -46,8 +46,13 @@ class AuthService {
                 throw new Error('Invalid password');
             }
 
-            // Set current user
+            // Set current user in chrome storage
             await this.storage.set({ currentUser: username });
+            
+            // Also set in localStorage for easier access in popup UI
+            // This is helpful when the extension UI needs quick access to login state
+            localStorage.setItem('username', username);
+            localStorage.setItem('isLoggedIn', 'true');
 
             return { success: true, message: 'Login successful' };
         } catch (error) {
@@ -58,7 +63,13 @@ class AuthService {
     // Logout user
     async logout() {
         try {
+            // Clear from chrome storage
             await this.storage.remove('currentUser');
+            
+            // Also clear from localStorage
+            localStorage.removeItem('username');
+            localStorage.removeItem('isLoggedIn');
+            
             return { success: true, message: 'Logout successful' };
         } catch (error) {
             return { success: false, message: error.message };
@@ -68,15 +79,32 @@ class AuthService {
     // Get current user
     async getCurrentUser() {
         try {
+            // First try to get from chrome storage
             const { currentUser } = await this.storage.get('currentUser');
+            
+            // If not in chrome storage, check localStorage
+            if (!currentUser && localStorage.getItem('isLoggedIn')) {
+                return localStorage.getItem('username');
+            }
+            
             return currentUser;
         } catch (error) {
+            // Fallback to localStorage if chrome storage fails
+            if (localStorage.getItem('isLoggedIn')) {
+                return localStorage.getItem('username');
+            }
             return null;
         }
     }
 
     // Check if user is logged in
     async isLoggedIn() {
+        // We can use a faster check with localStorage first
+        if (localStorage.getItem('isLoggedIn') === 'true') {
+            return true;
+        }
+        
+        // Fall back to chrome storage check if localStorage doesn't have it
         const currentUser = await this.getCurrentUser();
         return !!currentUser;
     }
