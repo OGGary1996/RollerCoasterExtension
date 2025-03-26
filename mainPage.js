@@ -5,6 +5,32 @@ document.addEventListener('DOMContentLoaded', function() {
         document.getElementById('userName').textContent = userName;
     }
 
+    // 检查是否是游客模式
+    const isGuestMode = localStorage.getItem('isGuestMode') === 'true';
+    if (isGuestMode) {
+        // 为游客模式添加视觉提示
+        document.getElementById('userName').innerHTML = '<span class="material-icons">account_circle</span> Guest';
+        document.getElementById('userName').style.color = '#757575';
+        
+        // 添加游客模式通知条
+        const guestBanner = document.createElement('div');
+        guestBanner.className = 'guest-banner';
+        guestBanner.innerHTML = `
+            <span class="material-icons">info</span>
+            <div>
+                <p><strong>Guest Mode</strong> - Some features are limited</p>
+                <p class="guest-banner-detail">Sign in for personalized recommendations and price alerts</p>
+            </div>
+            <button id="guestSignInBtn" class="btn btn-primary btn-sm">Sign In</button>
+        `;
+        document.querySelector('.main-container').prepend(guestBanner);
+        
+        // 绑定登录按钮事件
+        document.getElementById('guestSignInBtn').addEventListener('click', function() {
+            window.location.href = 'popup.html';
+        });
+    }
+
     // 处理标签切换
     const tabButtons = document.querySelectorAll('.tab-btn');
     const tabContents = document.querySelectorAll('.tab-pane');
@@ -23,6 +49,27 @@ document.addEventListener('DOMContentLoaded', function() {
             // 如果切换到价格趋势标签，初始化图表
             if (tabId === 'priceTrends') {
                 initPriceChart();
+            }
+
+            // 游客模式下，点击某些功能时显示限制提示
+            if (isGuestMode && (tabId === 'reviewAnalysis' || tabId === 'priceComparison')) {
+                const restrictedFeatureMessage = document.createElement('div');
+                restrictedFeatureMessage.className = 'restricted-feature-message';
+                restrictedFeatureMessage.innerHTML = `
+                    <span class="material-icons">lock</span>
+                    <p>This feature has limited functionality in guest mode</p>
+                    <button id="upgradeAccountBtn" class="btn btn-secondary btn-sm">Sign In to Unlock</button>
+                `;
+                
+                const tabPane = document.getElementById(tabId);
+                // 检查是否已经有限制提示
+                if (!tabPane.querySelector('.restricted-feature-message')) {
+                    tabPane.prepend(restrictedFeatureMessage);
+                }
+                
+                document.getElementById('upgradeAccountBtn').addEventListener('click', function() {
+                    window.location.href = 'popup.html';
+                });
             }
         });
     });
@@ -96,6 +143,7 @@ document.addEventListener('DOMContentLoaded', function() {
     document.getElementById('logoutBtn').addEventListener('click', function() {
         localStorage.removeItem('username');
         localStorage.removeItem('isLoggedIn');
+        localStorage.removeItem('isGuestMode');
         window.location.href = 'popup.html';
     });
 

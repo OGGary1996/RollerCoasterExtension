@@ -8,6 +8,7 @@ document.addEventListener('DOMContentLoaded', async function() {
     const getStartedBtn = document.getElementById('getStartedBtn');
     const loginBtn = document.getElementById('loginBtn');
     const registerBtn = document.getElementById('registerBtn');
+    const guestLoginBtn = document.getElementById('guestLoginBtn');
     const loginForm = document.getElementById('loginForm');
     const registerForm = document.getElementById('registerForm');
     const backToWelcomeFromLogin = document.getElementById('backToWelcomeFromLogin');
@@ -82,6 +83,36 @@ document.addEventListener('DOMContentLoaded', async function() {
         switchPage(welcomeDiv, registerDiv);
     });
 
+    // Guest login - direct access to main interface
+    guestLoginBtn.addEventListener('click', function() {
+        // Set as guest user in localStorage
+        localStorage.setItem('username', 'Guest');
+        localStorage.setItem('isLoggedIn', 'true');
+        localStorage.setItem('isGuestMode', 'true');
+        
+        console.log('Entering as guest...');
+        
+        // Show a brief notice before redirecting
+        const guestNotice = document.createElement('div');
+        guestNotice.className = 'message info';
+        guestNotice.textContent = 'Entering guest mode. Some features will be limited.';
+        guestNotice.style.position = 'absolute';
+        guestNotice.style.bottom = '20px';
+        guestNotice.style.left = '0';
+        guestNotice.style.right = '0';
+        guestNotice.style.marginLeft = 'auto';
+        guestNotice.style.marginRight = 'auto';
+        guestNotice.style.width = '80%';
+        guestNotice.style.textAlign = 'center';
+        guestNotice.style.zIndex = '9999';
+        document.body.appendChild(guestNotice);
+        
+        // Redirect to main page after a short delay
+        setTimeout(() => {
+            window.location.href = 'mainPage.html';
+        }, 1500);
+    });
+
     // Back to welcome from login
     backToWelcomeFromLogin.addEventListener('click', function() {
         switchPage(loginDiv, welcomeDiv);
@@ -118,6 +149,7 @@ document.addEventListener('DOMContentLoaded', async function() {
             // Set username in localStorage for display on main page
             localStorage.setItem('username', username);
             localStorage.setItem('isLoggedIn', 'true');
+            localStorage.setItem('isGuestMode', 'false');
             
             // Redirect to main page after a short delay
             setTimeout(() => {
