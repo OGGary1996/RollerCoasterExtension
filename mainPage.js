@@ -47,12 +47,12 @@ document.addEventListener('DOMContentLoaded', function() {
             document.getElementById(tabId).classList.add('active');
 
             // 如果切换到价格趋势标签，初始化图表
-            if (tabId === 'priceTrends') {
-                initPriceChart();
+            if (tabId === 'price-trends') {
+                initChart();
             }
 
             // 游客模式下，点击某些功能时显示限制提示
-            if (isGuestMode && (tabId === 'reviewAnalysis' || tabId === 'priceComparison')) {
+            if (isGuestMode && (tabId === 'reviews' || tabId === 'price-compare')) {
                 const restrictedFeatureMessage = document.createElement('div');
                 restrictedFeatureMessage.className = 'restricted-feature-message';
                 restrictedFeatureMessage.innerHTML = `
@@ -74,71 +74,6 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 
-    // 初始化价格趋势图表
-    function initPriceChart() {
-        if (typeof CanvasJS !== 'undefined') {
-            const chart = new CanvasJS.Chart("priceHistoryChart", {
-                animationEnabled: true,
-                theme: "light2",
-                title: {
-                    text: "价格历史走势",
-                    fontSize: 16,
-                    fontFamily: "'Roboto', 'Noto Sans SC', sans-serif",
-                    fontWeight: "normal"
-                },
-                axisX: {
-                    valueFormatString: "MMM DD",
-                    crosshair: {
-                        enabled: true,
-                        snapToDataPoint: true
-                    }
-                },
-                axisY: {
-                    title: "价格 (¥)",
-                    titleFontSize: 14,
-                    includeZero: false,
-                    suffix: "¥"
-                },
-                legend: {
-                    cursor: "pointer",
-                    verticalAlign: "bottom",
-                    horizontalAlign: "center",
-                    fontSize: 12
-                },
-                toolTip: {
-                    shared: true
-                },
-                data: [{
-                    type: "line",
-                    name: "商品价格",
-                    showInLegend: true,
-                    xValueFormatString: "MMM DD, YYYY",
-                    color: "#2979ff",
-                    dataPoints: [
-                        { x: new Date(2023, 9, 1), y: 2599 },
-                        { x: new Date(2023, 9, 15), y: 2599 },
-                        { x: new Date(2023, 10, 1), y: 2499 },
-                        { x: new Date(2023, 10, 15), y: 2399 },
-                        { x: new Date(2023, 11, 1), y: 2299 },
-                        { x: new Date(2023, 11, 15), y: 2399 },
-                        { x: new Date(2024, 0, 1), y: 2499 },
-                        { x: new Date(2024, 0, 15), y: 2199 },
-                        { x: new Date(2024, 1, 1), y: 2149 },
-                        { x: new Date(2024, 1, 15), y: 2099 }
-                    ]
-                }]
-            });
-            chart.render();
-        } else {
-            console.error("CanvasJS library not loaded");
-            document.getElementById("priceHistoryChart").innerHTML = `
-                <div style="height: 100%; display: flex; align-items: center; justify-content: center;">
-                    <p>图表库未加载，请检查网络连接</p>
-                </div>
-            `;
-        }
-    }
-
     // 处理退出登录
     document.getElementById('logoutBtn').addEventListener('click', function() {
         localStorage.removeItem('username');
@@ -150,9 +85,65 @@ document.addEventListener('DOMContentLoaded', function() {
     // 初始化UI - 默认显示第一个标签
     tabButtons[0].click();
 
-    // 填充模拟数据
-    initMockData();
+    // 加载最近查看的产品数据
+    loadProductData();
+    
+    // 监听来自background脚本的产品数据更新
+    chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
+        if (request.action === 'updateProductData') {
+            updateProductDisplay(request.data);
+            sendResponse({success: true});
+        }
+        return true;
+    });
 });
+
+// 从Chrome存储中加载产品数据
+function loadProductData() {
+    chrome.storage.local.get('recentProduct', function(result) {
+        if (result.recentProduct) {
+            console.log('Loaded saved product data:', result.recentProduct);
+            updateProductDisplay(result.recentProduct);
+        } else {
+            console.log('No saved product data found');
+            // 如果没有保存的产品数据，保留默认显示
+            initMockData();
+        }
+    });
+}
+
+// 使用从Amazon提取的数据更新产品显示
+function updateProductDisplay(productData) {
+    if (!productData) return;
+    
+    // 更新产品标题
+    const productTitleElement = document.getElementById('productTitle');
+    if (productTitleElement && productData.title) {
+        productTitleElement.textContent = productData.title;
+    }
+    
+    // 更新产品价格
+    const productPriceElement = document.getElementById('productPrice');
+    if (productPriceElement && productData.price) {
+        productPriceElement.textContent = productData.price;
+    }
+    
+    // 更新产品图片
+    const productImageElement = document.getElementById('productImage');
+    if (productImageElement && productData.imageUrl) {
+        productImageElement.src = productData.imageUrl;
+        productImageElement.alt = productData.title || 'Product Image';
+    }
+    
+    // 如果图表已经初始化，更新图表标题
+    if (typeof CanvasJS !== 'undefined' && 
+        CanvasJS.Chart && 
+        document.getElementById('priceChartContainer')) {
+        initChart(productData.title);
+    }
+    
+    console.log('Product display updated with extracted data');
+}
 
 // 初始化模拟数据
 function initMockData() {
@@ -168,39 +159,39 @@ function initMockData() {
     initChart();
 }
 
-function initChart() {
-// Initialize chart if CanvasJS is available
-if (typeof CanvasJS !== 'undefined' && document.getElementById('priceChartContainer')) {
-    var chart = new CanvasJS.Chart("priceChartContainer", {
-        animationEnabled: true,
-        exportEnabled: true,
-        title: {
-            text: "15.6 Laptop PC 16GB DDR4 512GB SSD, HD Laptop Computer AMD Ryzen 5 3500U Processor AMD"
-        },
-        axisY: {
-            title: "Price in CAD",
-            interval: 100,
-            prefix: "$",
-            valueFormatString: "#,###"
-        },
-        data: [{
-            type: "stepLine",
-            yValueFormatString: "$#,###",
-            xValueFormatString: "MMM DD, YYYY",
-            markerSize: 5,
-            dataPoints: [
-                { x: new Date(2025, 2, 1), y: 600 },  // March 1, 2025
-                { x: new Date(2025, 2, 5), y: 620 },  // March 5, 2025
-                { x: new Date(2025, 2, 10), y: 615 }, // March 10, 2025
-                { x: new Date(2025, 2, 15), y: 630 }, // March 15, 2025
-                { x: new Date(2025, 2, 20), y: 640 }, // March 20, 2025
-                { x: new Date(2025, 2, 25), y: 650 }, // March 25, 2025
-                { x: new Date(2025, 2, 30), y: 670 }  // March 30, 2025
-            ]
-        }]
-    });
-    chart.render();
-}
+function initChart(productTitle) {
+    // Initialize chart if CanvasJS is available
+    if (typeof CanvasJS !== 'undefined' && document.getElementById('priceChartContainer')) {
+        var chart = new CanvasJS.Chart("priceChartContainer", {
+            animationEnabled: true,
+            exportEnabled: true,
+            title: {
+                text: productTitle || "15.6 Laptop PC 16GB DDR4 512GB SSD, HD Laptop Computer AMD Ryzen 5 3500U Processor AMD"
+            },
+            axisY: {
+                title: "Price in CAD",
+                interval: 100,
+                prefix: "$",
+                valueFormatString: "#,###"
+            },
+            data: [{
+                type: "stepLine",
+                yValueFormatString: "$#,###",
+                xValueFormatString: "MMM DD, YYYY",
+                markerSize: 5,
+                dataPoints: [
+                    { x: new Date(2025, 2, 1), y: 600 },  // March 1, 2025
+                    { x: new Date(2025, 2, 5), y: 620 },  // March 5, 2025
+                    { x: new Date(2025, 2, 10), y: 615 }, // March 10, 2025
+                    { x: new Date(2025, 2, 15), y: 630 }, // March 15, 2025
+                    { x: new Date(2025, 2, 20), y: 640 }, // March 20, 2025
+                    { x: new Date(2025, 2, 25), y: 650 }, // March 25, 2025
+                    { x: new Date(2025, 2, 30), y: 670 }  // March 30, 2025
+                ]
+            }]
+        });
+        chart.render();
+    }
 }
 
 // 初始化评论统计数据

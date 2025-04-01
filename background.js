@@ -1,128 +1,53 @@
-// 存储历史记录的最大长度
-const MAX_HISTORY_LENGTH = 10;
+// 背景脚本 - 处理产品数据和消息传递
+console.log('Smart Shopping Assistant background script loaded');
 
-// 存储商品信息的函数
-function saveProductInfo(productInfo) {
-    // 保存当前商品信息
-    chrome.storage.local.set({ 'currentProduct': productInfo }, function() {
-        console.log('当前商品信息已保存:', productInfo);
-    });
-    
-    // 获取历史记录，并将新商品添加到历史记录中
-    chrome.storage.local.get(['productHistory'], function(result) {
-        let history = result.productHistory || [];
-        
-        // 检查是否已经存在相同URL的商品
-        const existingIndex = history.findIndex(item => item.url === productInfo.url);
-        
-        if (existingIndex !== -1) {
-            // 如果存在相同商品，则更新信息
-            history.splice(existingIndex, 1);
-        }
-        
-        // 添加新商品到历史记录开头
-        history.unshift(productInfo);
-        
-        // 限制历史记录长度
-        if (history.length > MAX_HISTORY_LENGTH) {
-            history = history.slice(0, MAX_HISTORY_LENGTH);
-        }
-        
-        // 保存更新后的历史记录
-        chrome.storage.local.set({ 'productHistory': history }, function() {
-            console.log('商品历史记录已更新，当前包含', history.length, '个商品');
-        });
-    });
-    
-    // 生成模拟的价格历史数据
-    generatePriceHistory(productInfo);
-}
+// 存储最近提取的产品数据
+let recentProductData = null;
 
-// 生成模拟的价格历史数据（在实际应用中，这部分可能需要通过API或数据库获取）
-function generatePriceHistory(productInfo) {
-    const currentPrice = parseFloat(productInfo.price);
-    
-    // 生成过去30天的模拟价格数据
-    const today = new Date();
-    const priceHistory = [];
-    
-    for (let i = 29; i >= 0; i--) {
-        const date = new Date(today);
-        date.setDate(today.getDate() - i);
-        
-        // 在当前价格的基础上随机波动
-        const randomFactor = 0.9 + Math.random() * 0.2; // 0.9到1.1之间的随机数
-        const historicalPrice = (currentPrice * randomFactor).toFixed(2);
-        
-        priceHistory.push({
-            date: date.toISOString().split('T')[0], // 仅保留日期部分
-            price: historicalPrice
-        });
-    }
-    
-    // 存储价格历史
-    chrome.storage.local.set({ 
-        'priceHistory': priceHistory,
-        'productUrl': productInfo.url 
-    }, function() {
-        console.log('价格历史数据已生成并保存');
-    });
-}
-
-// 监听来自content script的消息
+// 监听来自content脚本的消息
 chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
-    console.log('收到消息:', request);
-    
-    if (request.action === "productInfo") {
-        // 处理商品信息
-        saveProductInfo(request.product);
+    if (request.action === 'productData') {
+        console.log('Received product data from content script:', request.data);
         
-        // 向popup发送消息更新界面
+        // 存储产品数据
+        recentProductData = request.data;
+        
+        // 将数据存储到Chrome存储中
+        chrome.storage.local.set({
+            'recentProduct': request.data
+        }, function() {
+            console.log('Product data saved to storage');
+        });
+        
+        // 通知任何正在打开的popup或mainPage
         chrome.runtime.sendMessage({
-            action: "updateProductInfo",
-            product: request.product
+            action: 'updateProductData',
+            data: request.data
         });
         
-        // 显示通知
-        chrome.notifications.create({
-            type: 'basic',
-            iconUrl: 'images/icon48.png',
-            title: '商品信息已提取',
-            message: `成功提取商品: ${request.product.title}`
-        });
-        
-        // 回复content script
-        sendResponse({ status: "success", message: "商品信息已接收" });
+        sendResponse({success: true});
     }
     
-    // 返回true以支持异步回复
+    // 必须返回true以支持异步响应
     return true;
 });
 
-// 监听扩展安装或更新事件
-chrome.runtime.onInstalled.addListener(function(details) {
-    console.log('扩展已安装/更新:', details.reason);
-    
-    // 初始化存储
-    chrome.storage.local.set({
-        'productHistory': [],
-        'currentProduct': null,
-        'priceHistory': []
-    }, function() {
-        console.log('存储已初始化');
-    });
-});
-
-// 处理标签页更新事件，当用户导航到新页面时重新运行内容脚本
+// 监听标签页更新事件
 chrome.tabs.onUpdated.addListener(function(tabId, changeInfo, tab) {
-    if (changeInfo.status === 'complete' && tab.url && tab.url.includes('amazon.com')) {
-        console.log('Amazon页面已加载，重新运行内容脚本');
+    // 检查标签页是否已完成加载且URL是Amazon产品页面
+    if (changeInfo.status === 'complete' && 
+        tab.url && 
+        (tab.url.includes('amazon.com') || tab.url.includes('amazon.ca') || tab.url.includes('amazon.co.uk')) &&
+        (tab.url.includes('/dp/') || tab.url.includes('/gp/product/'))) {
         
-        // 向该标签页发送消息，通知内容脚本页面已更新
-        chrome.tabs.sendMessage(tabId, { action: "pageUpdated" }, function(response) {
-            // 忽略错误，因为如果内容脚本尚未加载会失败
+        // 向内容脚本发送消息，请求提取产品数据
+        chrome.tabs.sendMessage(tabId, {
+            action: 'getProductData'
+        }, function(response) {
             if (chrome.runtime.lastError) {
-                console.log('无法发送消息到内容脚本，可能是该脚本还未加载');
+                console.error('Error sending message to content script:', chrome.runtime.lastError);
+            } else if (response && response.success) {
+                console.log('Successfully requested product data');
             }
         });
     }
