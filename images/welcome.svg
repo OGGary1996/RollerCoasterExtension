@@ -1,0 +1,46 @@
+<svg width="200" height="200" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bgGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#75a7ff" />
+      <stop offset="100%" stop-color="#2979ff" />
+    </linearGradient>
+    <linearGradient id="cardGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FFFFFF" stop-opacity="0.9" />
+      <stop offset="100%" stop-color="#F8F9FA" stop-opacity="0.8" />
+    </linearGradient>
+    <filter id="shadow" x="-5%" y="-5%" width="110%" height="110%">
+      <feDropShadow dx="0" dy="4" stdDeviation="4" flood-color="#000000" flood-opacity="0.15"/>
+    </filter>
+    <linearGradient id="accentGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#ff7539" />
+      <stop offset="100%" stop-color="#ff3d00" />
+    </linearGradient>
+  </defs>
+  
+  <!-- Background circle -->
+  <circle cx="100" cy="100" r="90" fill="url(#bgGradient)" opacity="0.15"/>
+  
+  <!-- Decorative circles -->
+  <circle cx="50" cy="50" r="10" fill="#FF3D00" fill-opacity="0.4"/>
+  <circle cx="160" cy="60" r="8" fill="#2979ff" fill-opacity="0.5"/>
+  <circle cx="30" cy="150" r="15" fill="#2979ff" fill-opacity="0.3"/>
+  <circle cx="170" cy="140" r="12" fill="#FF3D00" fill-opacity="0.3"/>
+  
+  <!-- Main cards with shadow -->
+  <path d="M130 80H70C64.4772 80 60 84.4772 60 90V130C60 135.523 64.4772 140 70 140H130C135.523 140 140 135.523 140 130V90C140 84.4772 135.523 80 130 80Z" fill="url(#cardGradient)" filter="url(#shadow)" stroke="#2979ff" stroke-width="2"/>
+  <path d="M120 70H80C74.4772 70 70 74.4772 70 80V120C70 125.523 74.4772 130 80 130H120C125.523 130 130 125.523 130 120V80C130 74.4772 125.523 70 120 70Z" fill="url(#bgGradient)" fill-opacity="0.15" filter="url(#shadow)" stroke="#2979ff" stroke-width="2"/>
+  
+  <!-- Card lines -->
+  <path d="M85 100H115" stroke="url(#accentGradient)" stroke-width="2.5" stroke-linecap="round"/>
+  <path d="M85 110H115" stroke="url(#accentGradient)" stroke-width="2.5" stroke-linecap="round"/>
+  <path d="M85 90H115" stroke="url(#accentGradient)" stroke-width="2.5" stroke-linecap="round"/>
+  
+  <!-- Decorative elements -->
+  <path d="M40 65C40 65 45 60 50 65C55 70 60 65 60 65" stroke="#2979ff" stroke-width="2" stroke-linecap="round"/>
+  <path d="M140 65C140 65 145 60 150 65C155 70 160 65 160 65" stroke="#FF3D00" stroke-width="2" stroke-linecap="round"/>
+  
+  <!-- Stars -->
+  <path d="M40 35L42 40L37 38L40 43L35 40L40 35Z" fill="#FF3D00"/>
+  <path d="M160 35L162 40L157 38L160 43L155 40L160 35Z" fill="#2979ff"/>
+  <path d="M100 25L103 33L95 30L100 38L92 33L100 25Z" fill="#FF3D00"/>
+</svg> 

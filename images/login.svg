@@ -1,0 +1,50 @@
+<svg width="200" height="200" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bgGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#75a7ff" />
+      <stop offset="100%" stop-color="#2979ff" />
+    </linearGradient>
+    <linearGradient id="cardGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FFFFFF" stop-opacity="0.9" />
+      <stop offset="100%" stop-color="#F8F9FA" stop-opacity="0.8" />
+    </linearGradient>
+    <linearGradient id="accentGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#ff7539" />
+      <stop offset="100%" stop-color="#ff3d00" />
+    </linearGradient>
+    <filter id="shadow" x="-5%" y="-5%" width="110%" height="110%">
+      <feDropShadow dx="0" dy="4" stdDeviation="4" flood-color="#000000" flood-opacity="0.15"/>
+    </filter>
+  </defs>
+  
+  <!-- Background circle -->
+  <circle cx="100" cy="100" r="90" fill="url(#bgGradient)" opacity="0.15"/>
+  
+  <!-- Decorative elements -->
+  <circle cx="40" cy="50" r="8" fill="#FF3D00" fill-opacity="0.4"/>
+  <circle cx="150" cy="40" r="10" fill="#2979ff" fill-opacity="0.3"/>
+  <circle cx="170" cy="140" r="12" fill="#FF3D00" fill-opacity="0.25"/>
+  
+  <!-- Card with shadow -->
+  <rect x="60" y="70" width="80" height="100" rx="8" fill="url(#cardGradient)" filter="url(#shadow)" stroke="#2979ff" stroke-width="2"/>
+  
+  <!-- User avatar -->
+  <circle cx="100" cy="65" r="25" fill="url(#accentGradient)" fill-opacity="0.2" stroke="#FF3D00" stroke-width="2"/>
+  <path d="M85 63C85 55.268 91.268 49 99 49H101C108.732 49 115 55.268 115 63V65C115 72.732 108.732 79 101 79H99C91.268 79 85 72.732 85 65V63Z" fill="#FF3D00" fill-opacity="0.4"/>
+  
+  <!-- Form lines -->
+  <path d="M75 110H125" stroke="#2979ff" stroke-width="2.5" stroke-linecap="round"/>
+  <path d="M75 130H125" stroke="#2979ff" stroke-width="2.5" stroke-linecap="round"/>
+  
+  <!-- Login button -->
+  <path d="M100 150C106.075 150 111 145.075 111 139C111 132.925 106.075 128 100 128C93.9249 128 89 132.925 89 139C89 145.075 93.9249 150 100 150Z" fill="url(#accentGradient)" fill-opacity="0.8" stroke="#FF3D00" stroke-width="2"/>
+  
+  <!-- Sparkles -->
+  <path d="M50 100L53 105L48 103L50 108L45 105L50 100Z" fill="#2979ff"/>
+  <path d="M150 90L153 95L148 93L150 98L145 95L150 90Z" fill="#FF3D00"/>
+  <path d="M130 40L132 45L127 43L130 48L125 45L130 40Z" fill="#FF3D00"/>
+  
+  <!-- Additional decorative elements -->
+  <path d="M30 110C30 110 35 105 40 110C45 115 50 110 50 110" stroke="#2979ff" stroke-width="2" stroke-linecap="round"/>
+  <path d="M150 110C150 110 155 105 160 110C165 115 170 110 170 110" stroke="#FF3D00" stroke-width="2" stroke-linecap="round"/>
+</svg> 

@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Roller Coaster Dealer</title>
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <link rel="stylesheet" href="styles/style.css">
     <style>
@@ -121,6 +121,14 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
+    <!-- Background elements for glass effect -->
+    <div class="bg-shapes">
+        <div class="shape shape-1"></div>
+        <div class="shape shape-2"></div>
+        <div class="shape shape-3"></div>
+        <div class="shape shape-4"></div>
+    </div>
+
     <div class="container">
         <h2>Roller Coaster Dealer</h2>
         <div id="current-product">
@@ -129,7 +137,149 @@
         <div id="price-history">
             <div class="loading">Loading price history...</div>
         </div>
+        <div id="features" class="card">
+            <div class="card-content">
+                <div class="illustration-container">
+                    <img src="images/features.svg" alt="Features" class="illustration">
+                </div>
+                <h1 class="title">Smart Shopping Assistant</h1>
+                <p class="subtitle">Your AI-powered shopping companion</p>
+                
+                <div class="feature-list">
+                    <div class="feature-item">
+                        <span class="material-icons feature-icon">rate_review</span>
+                        <div class="feature-text">
+                            <h3>Smart Review Analysis</h3>
+                            <p>Automatically gather product reviews, filter out irrelevant information, and provide summarized insights to save users' time.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="feature-item">
+                        <span class="material-icons feature-icon">trending_up</span>
+                        <div class="feature-text">
+                            <h3>Price Trend Tracking</h3>
+                            <p>View price history trends for products in visual charts to make informed purchasing decisions.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="feature-item">
+                        <span class="material-icons feature-icon">storefront</span>
+                        <div class="feature-text">
+                            <h3>Price Comparison</h3>
+                            <p>Find websites offering the same product at lower prices across the internet.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="feature-item">
+                        <span class="material-icons feature-icon">shopping_basket</span>
+                        <div class="feature-text">
+                            <h3>Similar Product Finder</h3>
+                            <p>Discover similar products with better value across the web.</p>
+                        </div>
+                    </div>
+
+                    <div class="feature-item">
+                        <span class="material-icons feature-icon">shopping_basket</span>
+                        <div class="feature-text">
+                            <h3>Chart</h3>
+                            <canvas id="steppedLineChart" style="display: none;"></canvas>
+                            <button id="chartBtn" class="btn btn-primary">View Chart</button>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="button-container">
+                    <button id="getStartedBtn" class="btn btn-primary">Get Started</button>
+                </div>
+            </div>
+        </div>
+
+        <div id="welcome" class="card" style="display:none;">
+            <div class="card-content">
+                <div class="illustration-container">
+                    <img src="images/welcome.svg" alt="Welcome" class="illustration">
+                </div>
+                <h1 class="title">Welcome</h1>
+                <p class="subtitle">Sign in to access all features</p>
+                <div class="button-container">
+                    <button id="loginBtn" class="btn btn-primary">Login</button>
+                    <button id="registerBtn" class="btn btn-secondary">Register</button>
+                </div>
+                <div class="guest-option">
+                    <button id="guestLoginBtn" class="btn btn-text">Continue as Guest</button>
+                    <p class="guest-notice">Note: Guest mode has limited features. You won't receive personalized recommendations or shopping alerts.</p>
+                </div>
+            </div>
+        </div>
+        
+        <div id="login" class="card" style="display:none;">
+            <div class="glass-blur"></div>
+            <div class="card-content">
+                <div class="illustration-container">
+                    <img src="images/login.svg" alt="Login" class="illustration">
+                </div>
+                <h2 class="title">Login</h2>
+                <div id="loginMessage" class="message" style="display:none;"></div>
+                <form id="loginForm">
+                    <div class="form-field">
+                        <label for="loginUsername">Username</label>
+                        <input type="text" id="loginUsername" required>
+                    </div>
+                    <div class="form-field">
+                        <label for="loginPassword">Password</label>
+                        <input type="password" id="loginPassword" required>
+                    </div>
+                    <div class="button-container">
+                        <button type="button" id="backToWelcomeFromLogin" class="btn btn-text">Back</button>
+                        <button type="submit" class="btn btn-primary">Login</button>
+                    </div>
+                </form>
+                <div id="loginSpinner" class="spinner" style="display:none;"></div>
+            </div>
+        </div>
+        
+        <div id="register" class="card" style="display:none;">
+            <div class="glass-blur"></div>
+            <div class="card-content">
+                <div class="illustration-container">
+                    <img src="images/register.svg" alt="Register" class="illustration">
+                </div>
+                <h2 class="title">Register</h2>
+                <div id="registerMessage" class="message" style="display:none;"></div>
+                <form id="registerForm">
+                    <div class="form-field">
+                        <label for="registerUsername">Username</label>
+                        <input type="text" id="registerUsername" required>
+                    </div>
+                    <div class="form-field">
+                        <label for="registerPassword">Password</label>
+                        <input type="password" id="registerPassword" required>
+                    </div>
+                    <div class="form-field">
+                        <label for="confirmPassword">Confirm Password</label>
+                        <input type="password" id="confirmPassword" required>
+                    </div>
+                    <div class="button-container">
+                        <button type="button" id="backToWelcomeFromRegister" class="btn btn-text">Back</button>
+                        <button type="submit" class="btn btn-primary">Register</button>
+                    </div>
+                </form>
+                <div id="registerSpinner" class="spinner" style="display:none;"></div>
+            </div>
+        </div>
+
+        <div id="chart" class="card" style="display:none;">
+            <div class="card-content">
+                <h2 class="title">Price Trend Chart</h2>
+                <div id="chartContainer" style="height: 370px; width: 100%;"></div>
+                <div class="button-container">
+                    <button type="button" id="backToFeaturesFromChart" class="btn btn-text">Back</button>
+                </div>
+            </div>
+        </div>
     </div>
-    <script src="popup.js"></script>
+    <script src="jquery-3.7.1.min.js"></script>
+    <script src="canvasjs.min.js"></script>
+    <script type="module" src="popup.js"></script>
 </body>
 </html>
