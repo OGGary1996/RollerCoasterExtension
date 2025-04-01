@@ -164,6 +164,43 @@ function initMockData() {
     
     // 初始化价格比较数据
     initPriceComparison();
+
+    initChart();
+}
+
+function initChart() {
+// Initialize chart if CanvasJS is available
+if (typeof CanvasJS !== 'undefined' && document.getElementById('priceChartContainer')) {
+    var chart = new CanvasJS.Chart("priceChartContainer", {
+        animationEnabled: true,
+        exportEnabled: true,
+        title: {
+            text: "Acer Computer Price Data for April 2025"
+        },
+        axisY: {
+            title: "Price in CAD",
+            interval: 100,
+            prefix: "$",
+            valueFormatString: "#,###"
+        },
+        data: [{
+            type: "stepLine",
+            yValueFormatString: "$#,###",
+            xValueFormatString: "MMM DD, YYYY",
+            markerSize: 5,
+            dataPoints: [
+                { x: new Date(2025, 3, 1), y: 600 },  // April 1, 2025
+                { x: new Date(2025, 3, 5), y: 620 },  // April 5, 2025
+                { x: new Date(2025, 3, 10), y: 615 }, // April 10, 2025
+                { x: new Date(2025, 3, 15), y: 630 }, // April 15, 2025
+                { x: new Date(2025, 3, 20), y: 640 }, // April 20, 2025
+                { x: new Date(2025, 3, 25), y: 650 }, // April 25, 2025
+                { x: new Date(2025, 3, 30), y: 670 }  // April 30, 2025
+            ]
+        }]
+    });
+    chart.render();
+}
 }
 
 // 初始化评论统计数据
