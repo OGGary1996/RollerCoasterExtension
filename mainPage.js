@@ -175,7 +175,7 @@ if (typeof CanvasJS !== 'undefined' && document.getElementById('priceChartContai
         animationEnabled: true,
         exportEnabled: true,
         title: {
-            text: "Acer Computer Price Data for April 2025"
+            text: "15.6 Laptop PC 16GB DDR4 512GB SSD, HD Laptop Computer AMD Ryzen 5 3500U Processor AMD"
         },
         axisY: {
             title: "Price in CAD",
@@ -189,13 +189,13 @@ if (typeof CanvasJS !== 'undefined' && document.getElementById('priceChartContai
             xValueFormatString: "MMM DD, YYYY",
             markerSize: 5,
             dataPoints: [
-                { x: new Date(2025, 3, 1), y: 600 },  // April 1, 2025
-                { x: new Date(2025, 3, 5), y: 620 },  // April 5, 2025
-                { x: new Date(2025, 3, 10), y: 615 }, // April 10, 2025
-                { x: new Date(2025, 3, 15), y: 630 }, // April 15, 2025
-                { x: new Date(2025, 3, 20), y: 640 }, // April 20, 2025
-                { x: new Date(2025, 3, 25), y: 650 }, // April 25, 2025
-                { x: new Date(2025, 3, 30), y: 670 }  // April 30, 2025
+                { x: new Date(2025, 2, 1), y: 600 },  // March 1, 2025
+                { x: new Date(2025, 2, 5), y: 620 },  // March 5, 2025
+                { x: new Date(2025, 2, 10), y: 615 }, // March 10, 2025
+                { x: new Date(2025, 2, 15), y: 630 }, // March 15, 2025
+                { x: new Date(2025, 2, 20), y: 640 }, // March 20, 2025
+                { x: new Date(2025, 2, 25), y: 650 }, // March 25, 2025
+                { x: new Date(2025, 2, 30), y: 670 }  // March 30, 2025
             ]
         }]
     });
