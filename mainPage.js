@@ -48,7 +48,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
             // 如果切换到价格趋势标签，初始化图表
             if (tabId === 'price-trends') {
-                initChart();
+                loadPriceHistory();
             }
 
             // 游客模式下，点击某些功能时显示限制提示
@@ -92,6 +92,13 @@ document.addEventListener('DOMContentLoaded', function() {
     chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
         if (request.action === 'updateProductData') {
             updateProductDisplay(request.data);
+            // 同时加载价格历史数据
+            loadPriceHistory(request.data.productId);
+            sendResponse({success: true});
+        } else if (request.action === 'priceHistoryUpdated') {
+            // 更新价格历史图表
+            updatePriceHistoryChart(request.priceHistory);
+            updatePriceInsights(request.priceHistory);
             sendResponse({success: true});
         }
         return true;
@@ -104,12 +111,221 @@ function loadProductData() {
         if (result.recentProduct) {
             console.log('Loaded saved product data:', result.recentProduct);
             updateProductDisplay(result.recentProduct);
+            // 加载价格历史数据
+            loadPriceHistory(result.recentProduct.productId);
         } else {
             console.log('No saved product data found');
             // 如果没有保存的产品数据，保留默认显示
             initMockData();
         }
     });
+}
+
+// 加载价格历史数据
+function loadPriceHistory(productId) {
+    if (!productId) {
+        // 如果没有产品ID，尝试从存储中获取最近的产品
+        chrome.storage.local.get('recentProduct', function(result) {
+            if (result.recentProduct && result.recentProduct.productId) {
+                loadPriceHistoryData(result.recentProduct.productId);
+            } else {
+                console.log('No product ID available for price history');
+                // 使用模拟数据初始化图表
+                updatePriceHistoryChart(null);
+            }
+        });
+    } else {
+        loadPriceHistoryData(productId);
+    }
+}
+
+// 加载特定产品的价格历史数据
+function loadPriceHistoryData(productId) {
+    chrome.storage.local.get(['priceHistory_' + productId], function(result) {
+        if (result && result['priceHistory_' + productId]) {
+            console.log('Loaded price history data for product:', productId);
+            updatePriceHistoryChart(result['priceHistory_' + productId]);
+            updatePriceInsights(result['priceHistory_' + productId]);
+        } else {
+            console.log('No price history data found for product:', productId);
+            // 使用模拟数据初始化图表
+            updatePriceHistoryChart(null);
+        }
+    });
+}
+
+// 更新价格历史图表
+function updatePriceHistoryChart(priceHistory) {
+    // 获取当前显示的产品信息
+    chrome.storage.local.get('recentProduct', function(result) {
+        const productData = result.recentProduct;
+        let chartTitle = "Product Price History";
+        
+        if (productData && productData.title) {
+            chartTitle = productData.title;
+        }
+        
+        // 如果没有价格历史数据，生成一些模拟数据
+        if (!priceHistory || priceHistory.length === 0) {
+            const mockPriceHistory = generateMockPriceData();
+            initChart(chartTitle, mockPriceHistory);
+        } else {
+            // 确保日期是Date对象
+            const formattedPriceHistory = priceHistory.map(point => {
+                return {
+                    x: new Date(point.x),
+                    y: point.y
+                };
+            });
+            
+            initChart(chartTitle, formattedPriceHistory);
+        }
+    });
+}
+
+// 生成模拟价格数据
+function generateMockPriceData() {
+    const now = new Date();
+    const priceData = [];
+    
+    // 生成过去6个月的每周价格数据
+    for (let i = 26; i >= 0; i--) {
+        const date = new Date();
+        date.setDate(now.getDate() - (i * 7)); // 每7天一个数据点
+        
+        // 添加一些随机波动
+        const basePrice = 300;
+        const priceVariation = Math.random() * 100 - 50; // -50到+50的随机变化
+        
+        priceData.push({
+            x: date,
+            y: Math.max(100, Math.round(basePrice + priceVariation))
+        });
+    }
+    
+    return priceData;
+}
+
+// 更新价格洞察区域
+function updatePriceInsights(priceHistory) {
+    if (!priceHistory || priceHistory.length === 0) {
+        return;
+    }
+    
+    // 分析价格历史
+    const insights = analyzePriceHistory(priceHistory);
+    
+    // 更新价格比较
+    const priceCompareAvg = document.getElementById('priceCompareAvg');
+    if (priceCompareAvg) {
+        if (insights.priceChangePct > 0) {
+            priceCompareAvg.textContent = `${insights.priceChangePct}% higher than last month`;
+            document.getElementById('priceChange').className = 'price-change price-up';
+            document.getElementById('priceChange').innerHTML = `
+                <span class="material-icons">arrow_upward</span>
+                <span>${insights.priceChangePct}% from last month</span>
+            `;
+        } else if (insights.priceChangePct < 0) {
+            priceCompareAvg.textContent = `${Math.abs(insights.priceChangePct)}% lower than last month`;
+            document.getElementById('priceChange').className = 'price-change price-down';
+            document.getElementById('priceChange').innerHTML = `
+                <span class="material-icons">arrow_downward</span>
+                <span>${Math.abs(insights.priceChangePct)}% from last month</span>
+            `;
+        } else {
+            priceCompareAvg.textContent = `Same as last month`;
+            document.getElementById('priceChange').className = 'price-change';
+            document.getElementById('priceChange').innerHTML = `
+                <span class="material-icons">drag_handle</span>
+                <span>No change from last month</span>
+            `;
+        }
+    }
+    
+    // 更新最低价格
+    const lowestPriceElement = document.getElementById('lowestPrice');
+    if (lowestPriceElement) {
+        const lowestDate = new Date(priceHistory.find(p => p.y === insights.lowestPrice).x);
+        const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+        lowestPriceElement.textContent = `$${insights.lowestPrice} (${months[lowestDate.getMonth()]} ${lowestDate.getDate()})`;
+    }
+    
+    // 更新价格推荐
+    const priceRecommendation = document.getElementById('priceRecommendation');
+    if (priceRecommendation) {
+        priceRecommendation.textContent = insights.recommendation;
+    }
+}
+
+// 分析价格历史，生成洞察
+function analyzePriceHistory(priceHistory) {
+    if (!priceHistory || priceHistory.length === 0) {
+        return {
+            currentPrice: 'N/A',
+            lowestPrice: 'N/A',
+            highestPrice: 'N/A',
+            averagePrice: 'N/A',
+            priceChange: 0,
+            priceChangePct: 0,
+            recommendation: '无足够数据提供购买建议'
+        };
+    }
+    
+    // 将日期字符串转换为Date对象
+    const processedHistory = priceHistory.map(p => ({
+        x: new Date(p.x),
+        y: p.y
+    }));
+    
+    // 按日期排序
+    processedHistory.sort((a, b) => a.x - b.x);
+    
+    // 获取当前价格（最新数据点）
+    const currentPrice = processedHistory[processedHistory.length - 1].y;
+    
+    // 计算最低价格
+    const lowestPrice = Math.min(...processedHistory.map(p => p.y));
+    
+    // 计算最高价格
+    const highestPrice = Math.max(...processedHistory.map(p => p.y));
+    
+    // 计算平均价格
+    const sum = processedHistory.reduce((acc, curr) => acc + curr.y, 0);
+    const averagePrice = Math.round(sum / processedHistory.length);
+    
+    // 计算过去30天价格变化
+    let priceChange = 0;
+    let priceChangePct = 0;
+    
+    if (processedHistory.length > 4) { // 假设每周一个数据点，4个数据点约等于一个月
+        const lastMonthPrice = processedHistory[processedHistory.length - 5].y;
+        priceChange = currentPrice - lastMonthPrice;
+        priceChangePct = Math.round((priceChange / lastMonthPrice) * 100);
+    }
+    
+    // 生成购买建议
+    let recommendation = '';
+    if (currentPrice <= lowestPrice * 1.05) {
+        recommendation = '当前价格接近历史最低，是购买的好时机';
+    } else if (currentPrice >= averagePrice * 1.1) {
+        recommendation = '当前价格高于平均价格10%以上，建议等待降价';
+    } else if (priceChangePct < -5) {
+        recommendation = '价格最近下跌，可能继续下跌，建议观望';
+    } else if (priceChangePct > 5) {
+        recommendation = '价格最近上涨，如需购买建议尽快行动';
+    } else {
+        recommendation = '价格稳定，接近平均价格，适合购买';
+    }
+    
+    return {
+        currentPrice,
+        lowestPrice,
+        highestPrice,
+        averagePrice,
+        priceChange,
+        priceChangePct,
+        recommendation
+    };
 }
 
 // 使用从Amazon提取的数据更新产品显示
@@ -135,13 +351,6 @@ function updateProductDisplay(productData) {
         productImageElement.alt = productData.title || 'Product Image';
     }
     
-    // 如果图表已经初始化，更新图表标题
-    if (typeof CanvasJS !== 'undefined' && 
-        CanvasJS.Chart && 
-        document.getElementById('priceChartContainer')) {
-        initChart(productData.title);
-    }
-    
     console.log('Product display updated with extracted data');
 }
 
@@ -156,38 +365,52 @@ function initMockData() {
     // 初始化价格比较数据
     initPriceComparison();
 
-    initChart();
+    // 初始化价格历史图表
+    updatePriceHistoryChart(null);
 }
 
-function initChart(productTitle) {
+function initChart(productTitle, priceData) {
     // Initialize chart if CanvasJS is available
     if (typeof CanvasJS !== 'undefined' && document.getElementById('priceChartContainer')) {
         var chart = new CanvasJS.Chart("priceChartContainer", {
             animationEnabled: true,
-            exportEnabled: true,
+            theme: "light2",
             title: {
-                text: productTitle || "15.6 Laptop PC 16GB DDR4 512GB SSD, HD Laptop Computer AMD Ryzen 5 3500U Processor AMD"
+                text: productTitle || "Product Price History",
+                fontSize: 16,
+                fontWeight: "normal",
+                fontFamily: "'Roboto', sans-serif"
+            },
+            axisX: {
+                valueFormatString: "MMM DD, YYYY",
+                labelFontSize: 12,
+                gridThickness: 1,
+                gridColor: "rgba(200,200,200,0.2)"
             },
             axisY: {
-                title: "Price in CAD",
-                interval: 100,
+                title: "Price",
+                titleFontSize: 14,
                 prefix: "$",
-                valueFormatString: "#,###"
+                gridThickness: 1,
+                gridColor: "rgba(200,200,200,0.2)"
+            },
+            toolTip: {
+                shared: true,
+                contentFormatter: function(e) {
+                    var content = "<div style='padding:10px;'>";
+                    content += "<strong>" + CanvasJS.formatDate(e.entries[0].dataPoint.x, "MMM DD, YYYY") + "</strong>";
+                    content += "<br/><span style='color: #2979ff;'>Price: $" + e.entries[0].dataPoint.y + "</span>";
+                    content += "</div>";
+                    return content;
+                }
             },
             data: [{
-                type: "stepLine",
-                yValueFormatString: "$#,###",
+                type: "line",
                 xValueFormatString: "MMM DD, YYYY",
-                markerSize: 5,
-                dataPoints: [
-                    { x: new Date(2025, 2, 1), y: 600 },  // March 1, 2025
-                    { x: new Date(2025, 2, 5), y: 620 },  // March 5, 2025
-                    { x: new Date(2025, 2, 10), y: 615 }, // March 10, 2025
-                    { x: new Date(2025, 2, 15), y: 630 }, // March 15, 2025
-                    { x: new Date(2025, 2, 20), y: 640 }, // March 20, 2025
-                    { x: new Date(2025, 2, 25), y: 650 }, // March 25, 2025
-                    { x: new Date(2025, 2, 30), y: 670 }  // March 30, 2025
-                ]
+                color: "#2979ff",
+                lineThickness: 3,
+                markerSize: 6,
+                dataPoints: priceData
             }]
         });
         chart.render();

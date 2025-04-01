@@ -11,6 +11,7 @@
     <script src="https://canvasjs.com/assets/script/canvasjs.min.js"></script>
     <script src="jquery-3.7.1.min.js"></script>
     <script src="canvasjs.min.js"></script>
+    <script src="services/priceHistory.js"></script>
 </head>
 <body>
     <!-- Background elements for glass effect -->
@@ -99,22 +100,22 @@
                             <div class="insight">
                                 <span class="material-icons">insights</span>
                                 <div class="insight-text">
-                                    <h3>Current Price:</h3>
-                                    <p>10% lower than average</p>
+                                    <h3>Current vs. Average:</h3>
+                                    <p id="priceCompareAvg">10% lower than average</p>
                                 </div>
                             </div>
                             <div class="insight">
                                 <span class="material-icons">history</span>
                                 <div class="insight-text">
                                     <h3>Lowest Price:</h3>
-                                    <p>$550 (2 months ago)</p>
+                                    <p id="lowestPrice">$550 (2 months ago)</p>
                                 </div>
                             </div>
                             <div class="insight">
                                 <span class="material-icons">timeline</span>
                                 <div class="insight-text">
-                                    <h3>Price Prediction:</h3>
-                                    <p>Likely to drop 5% next month</p>
+                                    <h3>Recommendation:</h3>
+                                    <p id="priceRecommendation">Likely to drop 5% next month</p>
                                 </div>
                             </div>
                         </div>
