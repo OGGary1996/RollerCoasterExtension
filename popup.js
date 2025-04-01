@@ -5,6 +5,7 @@ document.addEventListener('DOMContentLoaded', async function() {
     const welcomeDiv = document.getElementById('welcome');
     const loginDiv = document.getElementById('login');
     const registerDiv = document.getElementById('register');
+    const productInfoDiv = document.getElementById('productInfo');
     const getStartedBtn = document.getElementById('getStartedBtn');
     const loginBtn = document.getElementById('loginBtn');
     const registerBtn = document.getElementById('registerBtn');
@@ -13,8 +14,7 @@ document.addEventListener('DOMContentLoaded', async function() {
     const registerForm = document.getElementById('registerForm');
     const backToWelcomeFromLogin = document.getElementById('backToWelcomeFromLogin');
     const backToWelcomeFromRegister = document.getElementById('backToWelcomeFromRegister');
-    const chartBtn = document.getElementById('chartBtn');
-    const backToFeaturesFromChart = document.getElementById('backToFeaturesFromChart');
+    const viewAnalysisBtn = document.getElementById('viewAnalysisBtn');
     
     const loginSpinner = document.getElementById('loginSpinner');
     const registerSpinner = document.getElementById('registerSpinner');
@@ -204,6 +204,110 @@ document.addEventListener('DOMContentLoaded', async function() {
         }
     });
 
+    // 检查当前是否有产品信息
+    function checkForProductInfo() {
+        chrome.storage.local.get(['currentProduct'], function(result) {
+            if (result.currentProduct) {
+                displayProductInfo(result.currentProduct);
+            } else {
+                // 检查当前标签页是否为Amazon商品页面
+                chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
+                    if (tabs[0] && tabs[0].url && tabs[0].url.includes('amazon.com')) {
+                        // 当前是Amazon页面，但还没有提取到产品信息
+                        productInfoDiv.style.display = 'block';
+                        document.getElementById('productTitle').textContent = 'Analyzing product...';
+                        document.getElementById('productPrice').textContent = 'Please wait';
+                        
+                        // 隐藏其他页面
+                        featuresDiv.style.display = 'none';
+                        if(welcomeDiv) welcomeDiv.style.display = 'none';
+                        if(loginDiv) loginDiv.style.display = 'none';
+                        if(registerDiv) registerDiv.style.display = 'none';
+                    }
+                });
+            }
+        });
+    }
+
+    // 显示产品信息
+    function displayProductInfo(product) {
+        console.log('显示产品信息:', product);
+        
+        // 更新UI元素
+        document.getElementById('productTitle').textContent = product.title || 'Unknown Product';
+        document.getElementById('productPrice').textContent = '$' + product.price || '$0.00';
+        
+        // 设置图片
+        if (product.imageSrc) {
+            document.getElementById('productImage').src = product.imageSrc;
+        } else {
+            document.getElementById('productImage').src = 'images/placeholder-product.png';
+        }
+        
+        // 显示产品信息面板，隐藏其他面板
+        productInfoDiv.style.display = 'block';
+        featuresDiv.style.display = 'none';
+        if(welcomeDiv) welcomeDiv.style.display = 'none';
+        if(loginDiv) loginDiv.style.display = 'none';
+        if(registerDiv) registerDiv.style.display = 'none';
+    }
+
+    // 查看详细分析按钮点击事件
+    if (viewAnalysisBtn) {
+        viewAnalysisBtn.addEventListener('click', function() {
+            // 检查用户是否登录
+            const isLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
+            
+            if (isLoggedIn) {
+                // 已登录，直接跳转到详细分析页面
+                window.location.href = 'mainPage.html';
+            } else {
+                // 未登录，显示欢迎页面要求登录
+                switchPage(productInfoDiv, welcomeDiv);
+            }
+        });
+    }
+
+    // 监听来自background.js的消息
+    chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
+        if (request.action === "updateProductInfo" && request.product) {
+            displayProductInfo(request.product);
+        }
+    });
+
+    // 检查用户是否已登录
+    const isLoggedIn = await authService.isLoggedIn();
+    
+    // 优先检查当前是否有产品信息
+    checkForProductInfo();
+    
+    if (isLoggedIn && !productInfoDiv.style.display === 'block') {
+        // 已登录并且没有显示产品信息，重定向到主页
+        window.location.href = 'mainPage.html';
+    }
+
+    // Add page transition animation
+    function switchPage(hideElement, showElement) {
+        // Add exit animation class
+        hideElement.style.opacity = '0';
+        hideElement.style.transform = 'translateY(20px)';
+        
+        setTimeout(() => {
+            hideElement.style.display = 'none';
+            
+            // Reset and show the new element
+            showElement.style.opacity = '0';
+            showElement.style.transform = 'translateY(20px)';
+            showElement.style.display = 'block';
+            
+            // Force reflow
+            showElement.offsetHeight;
+            
+            // Add entrance animation
+            showElement.style.opacity = '1';
+            showElement.style.transform = 'translateY(0)';
+        }, 300);
+    }
 
     // Add transition styles to all cards
     const cards = document.querySelectorAll('.card');
