@@ -164,22 +164,23 @@ function updatePriceHistoryChart(priceHistory) {
         if (productData && productData.title) {
             chartTitle = productData.title;
         }
-        
-        // 如果没有价格历史数据，生成一些模拟数据
-        if (!priceHistory || priceHistory.length === 0) {
-            const mockPriceHistory = generateMockPriceData();
+        const mockPriceHistory = generateMockPriceData();
             initChart(chartTitle, mockPriceHistory);
-        } else {
-            // 确保日期是Date对象
-            const formattedPriceHistory = priceHistory.map(point => {
-                return {
-                    x: new Date(point.x),
-                    y: point.y
-                };
-            });
+        // 如果没有价格历史数据，生成一些模拟数据
+        // if (!priceHistory || priceHistory.length === 0) {
+        //     const mockPriceHistory = generateMockPriceData();
+        //     initChart(chartTitle, mockPriceHistory);
+        // } else {
+        //     // 确保日期是Date对象
+        //     const formattedPriceHistory = priceHistory.map(point => {
+        //         return {
+        //             x: new Date(point.x),
+        //             y: point.y
+        //         };
+        //     });
             
-            initChart(chartTitle, formattedPriceHistory);
-        }
+        //     initChart(chartTitle, formattedPriceHistory);
+        // }
     });
 }
 
