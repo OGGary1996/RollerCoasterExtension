@@ -268,7 +268,7 @@ function analyzePriceHistory(priceHistory) {
             averagePrice: 'N/A',
             priceChange: 0,
             priceChangePct: 0,
-            recommendation: '无足够数据提供购买建议'
+            recommendation: 'Not enough data to make a purchase recommendation.'
         };
     }
     
@@ -307,15 +307,15 @@ function analyzePriceHistory(priceHistory) {
     // 生成购买建议
     let recommendation = '';
     if (currentPrice <= lowestPrice * 1.05) {
-        recommendation = '当前价格接近历史最低，是购买的好时机';
+        recommendation = 'The current price is close to the historical low, it is a good time to buy.';
     } else if (currentPrice >= averagePrice * 1.1) {
-        recommendation = '当前价格高于平均价格10%以上，建议等待降价';
+        recommendation = 'The current price is more than 10% higher than the average price. It is recommended to wait for a price reduction.';
     } else if (priceChangePct < -5) {
-        recommendation = '价格最近下跌，可能继续下跌，建议观望';
+        recommendation = 'Prices have fallen recently and may continue to fall, so it is recommended to wait and see';
     } else if (priceChangePct > 5) {
-        recommendation = '价格最近上涨，如需购买建议尽快行动';
+        recommendation = 'The price has risen recently, so if you want to buy, please act quickly.';
     } else {
-        recommendation = '价格稳定，接近平均价格，适合购买';
+        recommendation = 'The price is stable, close to the average price, suitable for purchase.';
     }
     
     return {
