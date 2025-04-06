@@ -4,7 +4,9 @@
   "version": "1.0.1",
   "description": "AI-powered shopping assistant that helps you make informed purchasing decisions",
   "background": {
-    "service_worker": "background.js"
+    "service_worker": "background.js",
+	"scripts": ["background.js"],
+    "persistent": false
   },
   "action": {
     "default_popup": "popup.html",
