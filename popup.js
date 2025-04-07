@@ -35,8 +35,21 @@ document.addEventListener('DOMContentLoaded', async function() {
 
     // Check if user is already logged in
     const isLoggedIn = await authService.isLoggedIn();
-    if (isLoggedIn) {
-        // Hide all other divs and show main interface
+    
+    // 检查是否是从logout回来的
+    const isLoggedOut = sessionStorage.getItem('loggedOut') === 'true';
+    
+    if (isLoggedOut) {
+        // 清除退出标记
+        sessionStorage.removeItem('loggedOut');
+        
+        // 显示欢迎页面
+        featuresDiv.style.display = 'none';
+        welcomeDiv.style.display = 'block';
+        loginDiv.style.display = 'none';
+        registerDiv.style.display = 'none';
+    } else if (isLoggedIn) {
+        // 用户已登录，重定向到主页面
         featuresDiv.style.display = 'none';
         welcomeDiv.style.display = 'none';
         loginDiv.style.display = 'none';

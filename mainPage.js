@@ -12,6 +12,12 @@ document.addEventListener('DOMContentLoaded', function() {
         document.getElementById('userName').innerHTML = '<span class="material-icons">account_circle</span> Guest';
         document.getElementById('userName').style.color = '#757575';
         
+        // 隐藏退出按钮
+        const logoutBtn = document.getElementById('logoutBtn');
+        if (logoutBtn) {
+            logoutBtn.style.display = 'none';
+        }
+        
         // 添加游客模式通知条
         const guestBanner = document.createElement('div');
         guestBanner.className = 'guest-banner';
@@ -21,12 +27,21 @@ document.addEventListener('DOMContentLoaded', function() {
                 <p><strong>Guest Mode</strong> - Some features are limited</p>
                 <p class="guest-banner-detail">Sign in for personalized recommendations and price alerts</p>
             </div>
-            <button id="guestSignInBtn" class="btn btn-primary btn-sm">Sign In</button>
+            <button id="guestModeSignInBtn" class="btn btn-primary btn-sm">Sign In</button>
         `;
         document.querySelector('.main-container').prepend(guestBanner);
         
-        // 绑定登录按钮事件
-        document.getElementById('guestSignInBtn').addEventListener('click', function() {
+        // 绑定游客模式下登录按钮点击事件
+        document.getElementById('guestModeSignInBtn').addEventListener('click', function() {
+            // 使用与退出登录相同的逻辑
+            localStorage.removeItem('username');
+            localStorage.removeItem('isLoggedIn');
+            localStorage.removeItem('isGuestMode');
+            
+            // 标记为需要显示登录页面
+            sessionStorage.setItem('loggedOut', 'true');
+            
+            // 重定向到popup.html
             window.location.href = 'popup.html';
         });
     }
@@ -58,7 +73,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 restrictedFeatureMessage.innerHTML = `
                     <span class="material-icons">lock</span>
                     <p>This feature has limited functionality in guest mode</p>
-                    <button id="upgradeAccountBtn" class="btn btn-secondary btn-sm">Sign In to Unlock</button>
                 `;
                 
                 const tabPane = document.getElementById(tabId);
@@ -66,19 +80,21 @@ document.addEventListener('DOMContentLoaded', function() {
                 if (!tabPane.querySelector('.restricted-feature-message')) {
                     tabPane.prepend(restrictedFeatureMessage);
                 }
-                
-                document.getElementById('upgradeAccountBtn').addEventListener('click', function() {
-                    window.location.href = 'popup.html';
-                });
             }
         });
     });
 
     // 处理退出登录
     document.getElementById('logoutBtn').addEventListener('click', function() {
+        // 移除所有用户相关的存储
         localStorage.removeItem('username');
         localStorage.removeItem('isLoggedIn');
         localStorage.removeItem('isGuestMode');
+        
+        // 添加一个标记表示这是退出登录操作
+        sessionStorage.setItem('loggedOut', 'true');
+        
+        // 重定向到popup.html
         window.location.href = 'popup.html';
     });
 
@@ -182,7 +198,7 @@ function showLoadingState() {
         chartContainer.innerHTML = `
             <div class="loading-container" style="display: flex; justify-content: center; align-items: center; height: 100%;">
                 <div class="loading-spinner" style="border: 4px solid rgba(0, 0, 0, 0.1); width: 36px; height: 36px; border-radius: 50%; border-left-color: #2979ff; animation: spin 1s linear infinite;"></div>
-                <p style="margin-left: 12px;">正在加载价格历史数据...</p>
+                <p style="margin-left: 12px;">Loading price history data...</p>
             </div>
             <style>
                 @keyframes spin {
@@ -196,7 +212,7 @@ function showLoadingState() {
     // 也可以为洞察区域添加加载状态
     const insightElements = document.querySelectorAll('.price-insights .insight-text p');
     insightElements.forEach(element => {
-        element.innerHTML = '<span style="color: #aaa;">加载中...</span>';
+        element.innerHTML = '<span style="color: #aaa;">Loading...</span>';
     });
 }
 
@@ -207,7 +223,7 @@ function hideLoadingState() {
     // 如果洞察区域还保留着加载状态，可以清除
     const insightElements = document.querySelectorAll('.price-insights .insight-text p');
     insightElements.forEach(element => {
-        if (element.innerHTML.includes('加载中')) {
+        if (element.innerHTML.includes('Loading')) {
             element.innerHTML = '';
         }
     });
@@ -288,21 +304,10 @@ function updatePriceInsightsWithAnalysis(analysis) {
 function updatePriceHistoryChart(priceHistory) {
     // 获取当前显示的产品信息
     chrome.storage.local.get('recentProduct', function(result) {
-        const productData = result.recentProduct;
-        let chartTitle = "30-Day Price History";
-        
-        if (productData && productData.title) {
-            // 限制标题长度，防止标题过长影响图表显示
-            const maxTitleLength = 70;
-            chartTitle = productData.title.length > maxTitleLength 
-                ? productData.title.substring(0, maxTitleLength) + '...' 
-                : productData.title;
-        }
-        
         // 如果没有价格历史数据，生成一些模拟数据
         if (!priceHistory || priceHistory.length === 0) {
             const mockPriceHistory = generateMockPriceData();
-            initChart(chartTitle, mockPriceHistory, true);
+            initChart(mockPriceHistory, true);
         } else {
             // 确保日期是Date对象
             const formattedPriceHistory = priceHistory.map(point => {
@@ -315,7 +320,7 @@ function updatePriceHistoryChart(priceHistory) {
             // 对数据进行排序，确保按时间顺序显示
             formattedPriceHistory.sort((a, b) => a.x - b.x);
             
-            initChart(chartTitle, formattedPriceHistory, false);
+            initChart(formattedPriceHistory, false);
         }
     });
 }
@@ -343,7 +348,7 @@ function generateMockPriceData() {
     return priceData;
 }
 
-function initChart(productTitle, priceData, isMockData) {
+function initChart(priceData, isMockData) {
     // Initialize chart if CanvasJS is available
     if (typeof CanvasJS !== 'undefined' && document.getElementById('priceChartContainer')) {
         // 设置适当的X轴时间间隔
@@ -401,7 +406,7 @@ function initChart(productTitle, priceData, isMockData) {
             animationEnabled: true,
             theme: "light2",
             title: {
-                text: productTitle,
+                text: "Price History",
                 fontSize: 16,
                 fontWeight: "normal",
                 fontFamily: "'Roboto', sans-serif",
@@ -617,7 +622,7 @@ function analyzePriceHistory(priceHistory) {
             averagePrice: 'N/A',
             priceChange: 0,
             priceChangePct: 0,
-            recommendation: '无足够数据提供购买建议'
+            recommendation: 'Insufficient data to provide a buying recommendation'
         };
     }
     
@@ -656,15 +661,15 @@ function analyzePriceHistory(priceHistory) {
     // 生成购买建议
     let recommendation = '';
     if (currentPrice <= lowestPrice * 1.05) {
-        recommendation = '当前价格接近历史最低，是购买的好时机';
+        recommendation = 'Current price is near the historical low, good time to buy';
     } else if (currentPrice >= averagePrice * 1.1) {
-        recommendation = '当前价格高于平均价格10%以上，建议等待降价';
+        recommendation = 'Price is 10% higher than average, consider waiting for a drop';
     } else if (priceChangePct < -5) {
-        recommendation = '价格最近下跌，可能继续下跌，建议观望';
+        recommendation = 'Price has been declining recently, may continue to drop';
     } else if (priceChangePct > 5) {
-        recommendation = '价格最近上涨，如需购买建议尽快行动';
+        recommendation = 'Price has been rising, buy soon if needed';
     } else {
-        recommendation = '价格稳定，接近平均价格，适合购买';
+        recommendation = 'Price is stable and close to average, suitable for purchase';
     }
     
     return {
@@ -691,7 +696,26 @@ function updateProductDisplay(productData) {
     // 更新产品价格
     const productPriceElement = document.getElementById('productPrice');
     if (productPriceElement && productData.price) {
-        productPriceElement.textContent = productData.price;
+        // 格式化价格，确保只有一个小数点
+        let formattedPrice = productData.price;
+        // 如果从Amazon抓取的价格包含货币符号，保留它
+        const currencySymbol = formattedPrice.match(/[$€£¥]/)?.[0] || '';
+        // 移除所有非数字和小数点的字符
+        let numericPrice = formattedPrice.replace(/[^0-9.]/g, '');
+        // 只保留第一个小数点
+        const firstDecimalIndex = numericPrice.indexOf('.');
+        if (firstDecimalIndex !== -1) {
+            numericPrice = numericPrice.substring(0, firstDecimalIndex + 1) + 
+                         numericPrice.substring(firstDecimalIndex + 1).replace(/\./g, '');
+        }
+        // 确保小数点后最多两位
+        const parts = numericPrice.split('.');
+        if (parts.length > 1 && parts[1].length > 2) {
+            parts[1] = parts[1].substring(0, 2);
+            numericPrice = parts.join('.');
+        }
+        // 组合货币符号和格式化后的价格
+        productPriceElement.textContent = currencySymbol + numericPrice;
     }
     
     // 更新产品图片

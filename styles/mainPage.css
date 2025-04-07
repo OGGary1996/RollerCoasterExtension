@@ -124,6 +124,9 @@
     font-weight: 700;
     color: var(--primary-dark);
     margin: 0;
+    white-space: nowrap;
+    overflow: visible;
+    text-overflow: clip;
 }
 
 .price-change {
@@ -791,11 +794,18 @@
     border-radius: 8px;
     padding: 12px 16px;
     margin-bottom: 20px;
+    flex-wrap: wrap;
+    justify-content: space-between;
 }
 
 .guest-banner .material-icons {
     color: #f9a825;
     font-size: 24px;
+}
+
+.guest-banner > div {
+    flex: 1;
+    min-width: 200px;
 }
 
 .guest-banner p {
@@ -806,6 +816,17 @@
 .guest-banner-detail {
     color: var(--text-secondary);
     font-size: 12px !important;
+}
+
+.guest-banner #guestModeSignInBtn {
+    background-color: var(--primary-color);
+    color: white;
+    border: none;
+    white-space: nowrap;
+}
+
+.guest-banner #guestModeSignInBtn:hover {
+    background-color: var(--primary-dark);
 }
 
 .btn-sm {

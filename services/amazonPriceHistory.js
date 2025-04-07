@@ -160,15 +160,15 @@ const amazonPriceHistoryService = {
         // 生成购买建议
         let recommendation = '';
         if (currentPrice <= lowestPrice * 1.05) {
-            recommendation = '当前价格接近30天内最低，是购买的好时机';
+            recommendation = 'Current price is close to 30-day low, good time to buy';
         } else if (currentPrice >= averagePrice * 1.1) {
-            recommendation = '当前价格高于30天平均价格10%以上，建议等待降价';
+            recommendation = 'Price is over 10% higher than 30-day average, consider waiting for a drop';
         } else if (priceTrend < -0.5) {
-            recommendation = '价格呈现明显下降趋势，可能继续下跌，建议观望';
+            recommendation = 'Price shows a clear downward trend, may continue to drop';
         } else if (priceTrend > 0.5) {
-            recommendation = '价格呈现明显上升趋势，如需购买建议尽快行动';
+            recommendation = 'Price shows a clear upward trend, buy soon if needed';
         } else {
-            recommendation = '价格相对稳定，接近平均价格，适合购买';
+            recommendation = 'Price is relatively stable and close to average, suitable for purchase';
         }
         
         return {
